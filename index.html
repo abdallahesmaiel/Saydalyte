@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#0ea882">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="صيدليتي">
+    <title>صيدليتي | توصيل الأدوية والمستلزمات الطبية</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #0ea882; --pl: #1cc9a0; --pd: #08755c; --d: #e63946; --w: #f4a261; --i: #3b82f6;
+            --td: #0b2c37; --tl: #4b7485; --bg: linear-gradient(145deg, #020d14 0%, #0a2330 30%, #0c3440 60%, #0a2a35 100%);
+            --cb: #fff; --bl: #d9e6ed;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; height: 100%; }
+        body { 
+            color: var(--td); background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; font-weight: 500; line-height: 1.6; 
+            padding-bottom: 80px; /* ✅ مساحة للفوتر المثبت */
+        }
+        
+        .navbar { background: rgba(8,30,40,0.9); backdrop-filter: blur(12px); color: #fff; padding: 0 1rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; height: 62px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .logo { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 900; color: #fff; cursor: pointer; }
+        .logo i { color: var(--pl); font-size: 1.3rem; }
+        .nav-actions { display: flex; align-items: center; gap: 10px; }
+        .cart-icon { position: relative; cursor: pointer; color: #fff; font-size: 1.3rem; display: none; }
+        .cart-badge { position: absolute; top: -7px; right: -7px; background: var(--w); color: #1a1a1a; border-radius: 20px; padding: 2px 6px; font-size: 0.65rem; font-weight: 900; border: 2px solid #fff; min-width: 18px; text-align: center; }
+        .menu-btn { background: var(--p); border: none; color: #fff; font-size: 1.2rem; cursor: pointer; padding: 9px 14px; border-radius: 35px; }
+        .menu-btn.hidden { display: none !important; }
+        
+        .sidebar { position: fixed; top: 0; right: -100%; width: 280px; height: 100%; background: #0f2938; color: #fff; transition: right 0.3s; z-index: 1100; overflow-y: auto; }
+        .sidebar.open { right: 0; }
+        .sidebar .user-info { padding: 20px 14px; text-align: center; border-bottom: 2px solid rgba(14,168,130,0.3); background: #0a1f2b; }
+        .sidebar .user-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--p); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; overflow: hidden; }
+        .sidebar .user-avatar i { font-size: 2rem; color: #fff; }
+        .sidebar .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar a { display: flex; align-items: center; padding: 12px 16px; color: #d0e8f0; text-decoration: none; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.04); gap: 10px; font-size: 0.85rem; }
+        .sidebar a i { width: 20px; font-size: 1rem; color: var(--pl); text-align: center; }
+        .sidebar a:hover { background: rgba(14,168,130,0.15); color: #fff; }
+        .close-sidebar { position: absolute; top: 8px; left: 8px; cursor: pointer; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 25px; color: #fff; font-size: 0.8rem; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1050; display: none; }
+        .overlay.show { display: block; }
+        
+        /* ✅ محتوى رئيسي يمتد ليملأ الفراغ */
+        #appContent { flex: 1; }
+        
+        .container { width: min(1100px, calc(100% - 0.8rem)); margin: 0 auto; padding: 0.8rem 0.4rem 0.8rem; }
+        .dashboard-hero { padding: 1rem; border-radius: 16px; margin-bottom: 0.8rem; background: rgba(255,255,255,0.06); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); }
+        .dashboard-hero h2 { color: #fff; font-size: 1.2rem; font-weight: 900; }
+        .dashboard-hero p { color: rgba(255,255,255,0.85); font-size: 0.8rem; }
+        
+        /* ✅✅✅ تصميم المتجر - أفقي دائمًا: صورة يمين + معلومات يسار ✅✅✅ */
+        .cards-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 0.8rem; }
+        .product-card { 
+            background: #fff; 
+            border-radius: 16px; 
+            padding: 0; 
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08); 
+            border-right: 4px solid var(--p); 
+            transition: all 0.3s ease; 
+            display: flex !important; 
+            flex-direction: row !important; 
+            overflow: hidden;
+            min-height: 140px;
+        }
+        .product-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.15); transform: translateY(-2px); }
+        .product-card .product-image { 
+            width: 150px !important; 
+            min-width: 150px !important;
+            height: auto !important;
+            min-height: 140px;
+            background: #f5f9fc; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden;
+            border-left: 1px solid #e8f0f4;
+            flex-shrink: 0;
+        }
+        .product-card .product-image img { 
+            width: 100% !important; 
+            height: 100% !important; 
+            object-fit: cover !important;
+            display: block;
+        }
+        .product-card .product-image i { font-size: 3.5rem; color: #b0c4d9; }
+        .product-card .product-info { 
+            flex: 1; 
+            padding: 12px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+            min-width: 0;
+        }
+        .product-card .product-name { font-weight: 800; color: var(--td); font-size: 1rem; margin: 0 0 4px 0; line-height: 1.3; }
+        .product-card .product-description { font-size: 0.8rem; color: var(--tl); margin: 4px 0; line-height: 1.5; }
+        .product-card .product-category-badge { 
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #e8f5e9; 
+            color: var(--pd); 
+            padding: 3px 10px; 
+            border-radius: 12px; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            margin: 4px 0;
+            width: fit-content;
+        }
+        .product-card .product-pharmacy-name { font-weight: 700; font-size: 0.75rem; color: var(--p); margin: 2px 0; display: flex; align-items: center; gap: 4px; }
+        .product-card .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-bottom: 8px;
+        }
+        .product-card .product-footer { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-top: auto; 
+            padding-top: 8px; 
+            border-top: 1px solid #e8f0f4; 
+            gap: 8px; 
+            flex-wrap: wrap; 
+        }
+        .product-card .product-price { font-weight: 900; color: var(--pd); font-size: 1.1rem; }
+        .product-card .product-stock { font-weight: 800; font-size: 0.75rem; padding: 3px 10px; border-radius: 12px; }
+        .product-card .product-stock.in { color: #27ae60; background: #e8f5e9; } 
+        .product-card .product-stock.low { color: #f4a261; background: #fff8e1; } 
+        .product-card .product-stock.out { color: #e63946; background: #fdecea; }
+        .product-card .add-to-cart-btn { background: var(--p); color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.8rem; white-space: nowrap; transition: 0.2s; flex-shrink: 0; }
+        .product-card .add-to-cart-btn:hover { filter: brightness(1.1); }
+        .product-card .add-to-cart-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #95a5a6; }
+        
+        /* تصميم صفحة الصيدلية - عمودي */
+        .pharmacy-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.8rem; margin-top: 0.8rem; }
+        .pharmacy-product-card { background: #fff; border-radius: 20px; padding: 0.8rem; box-shadow: 0 6px 18px rgba(0,0,0,0.1); border-top: 3px solid var(--p); transition: 0.3s; display: flex; flex-direction: column; }
+        .pharmacy-product-card .pharmacy-product-image { width: 100%; height: 110px; border-radius: 14px; overflow: hidden; margin-bottom: 6px; background: #f5f9fc; display: flex; align-items: center; justify-content: center; }
+        .pharmacy-product-card .pharmacy-product-image img { width: 100%; height: 100%; object-fit: cover; }
+        .pharmacy-product-card .pharmacy-product-image i { font-size: 2.2rem; color: #b0c4d9; }
+        
+        .cart-container { background: #fff; border-radius: 20px; padding: 1rem; margin-top: 0.8rem; box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
+        .cart-pharmacy-group { margin-bottom: 14px; padding: 10px; background: #f9fcfd; border-radius: 14px; border: 1px solid #e8f0f4; }
+        .cart-pharmacy-group h4 { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--td); font-size: 0.9rem; padding-bottom: 6px; border-bottom: 2px solid var(--pl); }
+        .cart-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px dashed #e0ecf2; }
+        .cart-item:last-child { border-bottom: none; }
+        .cart-item-image { width: 48px; height: 48px; border-radius: 10px; overflow: hidden; background: #f5f9fc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .cart-item-image img { width: 100%; height: 100%; object-fit: cover; }
+        .cart-item-image i { font-size: 1.3rem; color: #b0c4d9; }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name { font-weight: 800; color: var(--td); font-size: 0.85rem; }
+        .cart-item-price { font-weight: 800; color: var(--pd); font-size: 0.9rem; }
+        .cart-item-controls { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .quantity-btn { width: 30px; height: 30px; border-radius: 8px; border: 2px solid #cbdae2; background: #fff; color: var(--td); font-weight: 800; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .cart-item-quantity { font-weight: 800; min-width: 22px; text-align: center; font-size: 0.9rem; background: #f0f6fa; border-radius: 6px; padding: 3px 6px; }
+        .remove-item-btn { color: var(--d); cursor: pointer; font-size: 1rem; padding: 3px; }
+        .cart-summary { margin-top: 12px; padding: 12px; background: #f9fcfd; border-radius: 14px; }
+        .cart-total { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 900; color: var(--td); margin-bottom: 10px; }
+        .checkout-btn { background: linear-gradient(135deg, var(--p), var(--pd)); color: #fff; border: none; padding: 12px; border-radius: 25px; font-weight: 800; font-size: 0.9rem; width: 100%; cursor: pointer; }
+        
+        .orders-container { background: #fff; border-radius: 20px; padding: 1rem; margin-top: 0.8rem; box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
+        .order-card { background: #fff; border-radius: 16px; padding: 0.8rem; margin-bottom: 0.6rem; border-right: 4px solid var(--p); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; gap: 6px; flex-wrap: wrap; }
+        .order-client { display: flex; align-items: center; gap: 8px; }
+        .client-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--p); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.9rem; }
+        .client-info h4 { font-size: 0.85rem; font-weight: 800; color: var(--td); }
+        .client-info p { font-size: 0.75rem; color: var(--tl); }
+        .order-status { padding: 4px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: 800; white-space: nowrap; }
+        .order-status.pending { background: #fff3e0; color: #b85b14; }
+        .order-status.preparing { background: #fff8e1; color: #946800; }
+        .order-status.ready { background: #e3f2fd; color: #1565c0; }
+        .order-status.delivering { background: #e8f5e9; color: #2e7d32; }
+        .order-status.completed { background: #d0f0e8; color: #0a5e4e; }
+        .order-status.rejected { background: #fdecea; color: #c0392b; }
+        .order-address { background: #f6fafc; padding: 6px 10px; border-radius: 10px; margin: 6px 0; font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; }
+        .order-actions { display: flex; gap: 5px; margin-top: 8px; flex-wrap: wrap; }
+        .order-actions button { flex: 1; min-width: 80px; padding: 7px; font-weight: 700; border-radius: 15px; border: none; cursor: pointer; font-size: 0.8rem; }
+        
+        button { background: var(--p); color: #fff; border: none; padding: 8px 16px; border-radius: 25px; font-weight: 700; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+        button:hover { filter: brightness(1.1); }
+        button.accept-btn { background: var(--p); }
+        button.reject-btn { background: var(--d); }
+        button.call-btn { background: var(--i); }
+        .back-button { background: rgba(255,255,255,0.2); color: #fff; padding: 7px 16px; border-radius: 25px; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 0.6rem; border: 1px solid rgba(255,255,255,0.2); font-size: 0.8rem; }
+        
+        .input-group { margin-bottom: 0.8rem; position: relative; }
+        .input-group i:not(.toggle-password) { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--p); font-size: 0.9rem; pointer-events: none; z-index: 1; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 10px 35px 10px 10px; border: 2px solid #d6e4ec; border-radius: 12px; font-size: 0.85rem; background: #fff; color: var(--td); font-weight: 600; }
+        .location-group { background: #f6fafc; border-radius: 12px; padding: 8px; margin-bottom: 10px; border: 1px solid #dce6ed; }
+        .location-group label { display: block; margin-bottom: 4px; color: var(--td); font-weight: 800; font-size: 0.8rem; }
+        .location-select { width: 100%; padding: 8px; border: 2px solid #d6e4ec; border-radius: 8px; background: #fff; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1200; justify-content: center; align-items: center; padding: 0.8rem; backdrop-filter: blur(4px); }
+        .modal-content { background: #fff; border-radius: 20px; padding: 1.2rem; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .modal-content h3 { color: var(--td); margin-bottom: 0.8rem; font-weight: 900; text-align: center; font-size: 1.1rem; }
+        .modal-buttons { display: flex; gap: 0.6rem; justify-content: center; margin-top: 0.8rem; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin: 0.8rem 0; }
+        .stat-card { background: #fff; border-radius: 16px; padding: 1rem 0.6rem; text-align: center; cursor: pointer; border: 1px solid #e8f0f4; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+        .stat-card i { font-size: 1.5rem; color: var(--p); margin-bottom: 4px; }
+        .stat-value { font-size: 1.3rem; font-weight: 900; color: var(--td); }
+        .stat-label { color: var(--tl); font-size: 0.8rem; font-weight: 700; }
+        
+        .section-title { font-size: 1.1rem; font-weight: 900; margin: 14px 0 8px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px; }
+        .empty-state { text-align: center; padding: 35px 15px; color: #6b8a99; }
+        .empty-state i { font-size: 3rem; color: #c8d8e0; margin-bottom: 8px; }
+        .reason-text { background: #fdf0ed; padding: 6px 10px; border-radius: 10px; margin-top: 6px; border-right: 3px solid var(--d); font-weight: 600; font-size: 0.8rem; }
+        .timer-note { font-size: 0.75rem; color: #e67e22; margin-top: 5px; font-weight: 600; }
+        
+        /* ✅✅✅ الفوتر الجديد - مثبت في الأسفل ✅✅✅ */
+        .footer-bar { 
+            background: rgba(8,30,40,0.95); 
+            backdrop-filter: blur(10px);
+            border-top: 2px solid rgba(14,168,130,0.6); 
+            padding: 0.9rem 1rem; 
+            color: #d0e8f0; 
+            text-align: center; 
+            font-size: 0.85rem; 
+            font-weight: 600;
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            z-index: 900; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+        }
+        .footer-bar i {
+            color: var(--pl);
+            font-size: 1rem;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.7; transform: scale(1); }
+        }
+        .footer-bar .brand-name {
+            color: var(--p);
+            font-weight: 900;
+        }
+        
+        .pharmacy-stop { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed #d4e8dc; }
+        .pharmacy-stop:last-child { border-bottom: none; }
+        .pharmacy-stop-icon { width: 30px; height: 30px; background: var(--p); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.8rem; flex-shrink: 0; }
+        .pharmacies-list { background: #f8fdf9; border-radius: 12px; padding: 10px; margin: 8px 0; border: 1px solid #c8e6d8; }
+        .pharmacies-list h5 { margin-bottom: 8px; font-size: 0.85rem; color: var(--td); display: flex; align-items: center; gap: 6px; }
+        .toolbar { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 0.5rem; margin: 0.6rem 0; }
+        .search-shell, .select-shell { background: #fff; border-radius: 12px; padding: 0.3rem 0.6rem; display: flex; align-items: center; gap: 0.5rem; border: 1px solid #e0ecf2; min-height: 46px; }
+        .search-shell i, .select-shell i { color: var(--p); font-size: 0.9rem; }
+        .search-shell input, .select-shell select { width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.8rem; }
+        .delivery-info { background: #eef6fa; padding: 8px 10px; border-radius: 10px; margin: 6px 0; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        
+        @media (max-width: 768px) { 
+            .toolbar { grid-template-columns: 1fr; } 
+            /* ✅ تم تعديل هذا الجزء ليبقى التخطيط أفقيًا دائمًا ✅ */
+            .product-card { flex-direction: row !important; }
+            .product-card .product-image { width: 150px !important; min-width: 150px !important; height: auto !important; border-left: 1px solid #e8f0f4; border-bottom: none; }
+            .stats-grid { grid-template-columns: 1fr 1fr; } 
+            .logo { font-size: 1rem; } 
+            .footer-bar { font-size: 0.75rem; padding: 0.7rem; }
+        }
+        @media (max-width: 400px) { 
+            .stats-grid { grid-template-columns: 1fr; } 
+            .cart-item { flex-wrap: wrap; } 
+            .cart-item-controls { width: 100%; justify-content: center; margin-top: 6px; } 
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo" onclick="goToHome()"><i class="fas fa-truck-medical"></i> صيدليتي | توصيل الادوية</div>
+    <div class="nav-actions">
+        <div class="cart-icon" id="cartIcon" onclick="renderCart()"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartBadge">0</span></div>
+        <button class="menu-btn hidden" id="menuBtn"><i class="fas fa-bars"></i></button>
+    </div>
+</header>
+
+<aside class="sidebar" id="sidebar">
+    <div class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></div>
+    <div class="user-info">
+        <div class="user-avatar" id="sidebarAvatar"><i class="fas fa-user-circle"></i></div>
+        <h3 id="sidebarUsername"></h3><p id="sidebarUserType"></p>
+    </div>
+    <nav>
+        <a href="#" id="sideHome"><i class="fas fa-home"></i> <span id="sideHomeText">الرئيسية</span></a>
+        <a href="#" id="sideCart" style="display:none;"><i class="fas fa-shopping-cart"></i> سلة التسوق <span id="sideCartBadge" class="cart-badge" style="position:static;margin-right:6px;">0</span></a>
+        <a href="#" id="sideOrders"><i class="fas fa-clipboard-list"></i> طلباتي</a>
+        <a href="#" id="sideProducts" style="display:none;"><i class="fas fa-boxes"></i> منتجاتي</a>
+        <a href="#" id="sideProfile"><i class="fas fa-user-edit"></i> الملف الشخصي</a>
+        <a href="#" id="sideLogout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+    </nav>
+</aside>
+<div class="overlay" id="overlay"></div>
+
+<main id="appContent"></main>
+
+<!-- ✅ فوتر يظهر ديناميكيًا عبر JavaScript في نهاية كل صفحة -->
+<!-- سيتم إدراجه عبر دالة addFooter() -->
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyCdeHmlFnIJ2e9kQvXZ8XsF1yFOFlSqXU0",
+    authDomain: "facebookat-d5f39.firebaseapp.com",
+    databaseURL: "https://facebookat-d5f39-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "facebookat-d5f39",
+    storageBucket: "facebookat-d5f39.firebasestorage.app",
+    messagingSenderId: "1070831866107",
+    appId: "1:1070831866107:web:0ceaae0c5cf20c0cd9605e"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let currentUser = null;
+let currentCart = { items: {} };
+
+// ============ نظام التنبيهات ============
+function requestNotificationPermission() {
+    if (!("Notification" in window)) return;
+    Notification.requestPermission();
+}
+function sendPushNotification(title, body) {
+    if (Notification.permission === "granted") {
+        new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/4320/4320355.png' });
+    }
+    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+    audio.play().catch(e => console.log("Audio play failed"));
+}
+function listenForNewOrders() {
+    if (!currentUser) return;
+    const ordersRef = db.ref('orders');
+    ordersRef.on('child_added', (snapshot) => {
+        const order = snapshot.val();
+        if (currentUser.type === 'pharmacy' && order.pharmacyOrders && order.pharmacyOrders[currentUser.username]) {
+            if (order.pharmacyOrders[currentUser.username].status === 'pending') {
+                sendPushNotification("طلب جديد وارد! 💊", `لديك طلب جديد من ${order.clientName}`);
+            }
+        }
+        if (currentUser.type === 'delivery' && order.deliveryStatus === 'ready_for_pickup' && order.city === currentUser.city && !order.deliveryAgentId) {
+            sendPushNotification("طلب جاهز للتوصيل! 🛵", `يوجد طلب جديد في منطقة ${order.city} ينتظر مندوباً`);
+        }
+    });
+    ordersRef.on('child_changed', (snapshot) => {
+        const order = snapshot.val();
+        if (currentUser.type === 'delivery' && order.deliveryStatus === 'ready_for_pickup' && order.city === currentUser.city && !order.deliveryAgentId) {
+            sendPushNotification("تحديث طلب! 📦", `طلب رقم #${snapshot.key.slice(-6)} جاهز للاستلام الآن`);
+        }
+    });
+}
+
+// ============ البيانات الأساسية ============
+const defaultGovernorates = {
+    "اختر المحافظة":["اختر المركز"],"القاهرة":["15 مايو","الأزبكية","البساتين","التبين","الزاوية الحمراء","الزيتون","الساحل","السلام","الشرابية","المطرية","المعادي","المعصرة","المقطم","المنيل","الوايلي","باب الشعرية","بولاق","حدائق القبة","حلوان","دار السلام","شبرا","طرة","عابدين","عين شمس","مدينة نصر","مصر الجديدة","مصر القديمة","منشأة ناصر","وسط القاهرة"],
+    "الجيزة":["أبو النمرس","أوسيم","البدرشين","الحوامدية","الدقي","الوراق","إمبابة","بولاق الدكرور","كرداسة","العجوزة","المهندسين","الهرم","فيصل","الشيخ زايد","السادس من أكتوبر","حدائق أكتوبر","الواحات البحرية","العياط","الصف","أطفيح"],
+    "الإسكندرية":["الإبراهيمية","الأزاريطة","الجمرك","الحضرة","الدخيلة","السيوف","العامرية","العطارين","المنشية","المنتزه","المندرة","المكس","باب شرق","برج العرب","جليم","رأس التين","سابا باشا","سان ستيفانو","سبورتنج","سموحة","العصافرة","العجمي","بحري","كرموز","محرم بك","محطة الرمل","ميامي","فيكتوريا","أبو قير"],
+    "الدقهلية":["المنصورة","طلخا","ميت غمر","دكرنس","أجا","منية النصر","السنبلاوين","الكردي","بني عبيد","المنزلة","تمي الأمديد","الجمالية","شربين","المطرية","بلقاس","ميت سلسيل","جمصة","محلة دمنة","نبروة"],
+    "الشرقية":["الزقازيق","منيا القمح","بلبيس","مشتول السوق","أبو حماد","ههيا","أبو كبير","فاقوس","الإبراهيمية","ديرب نجم","كفر صقر","أولاد صقر","الحسينية","صان الحجر","منشأة أبو عمر"],
+    "البحيرة":["دمنهور","كفر الدوار","رشيد","إدكو","أبو المطامير","أبو حمص","الدلنجات","المحمودية","الرحمانية","إيتاي البارود","حوش عيسى","شبراخيت","كوم حمادة","بدر","وادي النطرون","النوبارية الجديدة"],
+    "الغربية":["طنطا","المحلة الكبرى","كفر الزيات","السنطة","قطور","بسيون","سمنود","زفتى"],
+    "المنوفية":["شبين الكوم","مدينة السادات","منوف","سرس الليان","أشمون","الباجور","قويسنا","بركة السبع","تلا","الشهداء"],
+    "القليوبية":["بنها","قليوب","القناطر الخيرية","الخانكة","كفر شكر","طوخ","قها","العبور","الخصوص","شبين القناطر"],
+    "الفيوم":["الفيوم","سنورس","إطسا","طامية","يوسف الصديق","أبشواي"],
+    "بني سويف":["بني سويف","الواسطى","ناصر","إهناسيا","ببا","سمسطا","الفشن"],
+    "المنيا":["المنيا","العدوة","مغاغة","بني مزار","مطاي","سمالوط","أبو قرقاص","ملوي","دير مواس"],
+    "أسيوط":["أسيوط","ديروط","القوصية","منفلوط","أبنوب","أبو تيج","الغنايم","ساحل سليم","البداري","صدفا","الفتح"],
+    "سوهاج":["سوهاج","أخميم","البلينا","المراغة","المنشأة","دار السلام","جرجا","جهينة","ساقلته","طما","طهطا"],
+    "قنا":["قنا","أبو تشت","نجع حمادي","دشنا","الوقف","قفط","نقادة","فرشوط","قوص"],
+    "الأقصر":["الأقصر","الزينية","البياضية","القرنة","أرمنت","الطود","إسنا"],
+    "أسوان":["أسوان","دراو","كوم أمبو","نصر النوبة","إدفو","الرديسية","البصيلية","السباعية","أبو سمبل"],
+    "دمياط":["دمياط","دمياط الجديدة","رأس البر","فارسكور","الزرقا","كفر سعد","عزبة البرج"],
+    "بورسعيد":["بورسعيد","بورفؤاد","الضواحي","المناخ","العرب","الزهور","الشرق"],
+    "الإسماعيلية":["الإسماعيلية","التل الكبير","القنطرة شرق","القنطرة غرب","فايد","أبو صوير"],
+    "السويس":["السويس","الجناين","عتاقة","فيصل"],
+    "شمال سيناء":["العريش","الشيخ زويد","رفح","بئر العبد","الحسنة","نخل"],
+    "جنوب سيناء":["الطور","شرم الشيخ","دهب","نويبع","رأس سدر","أبو رديس","سانت كاترين","طابا"],
+    "مطروح":["مرسى مطروح","الحمام","العلمين","الضبعة","النجيلة","سيدي براني","السلوم","سيوة"],
+    "الوادي الجديد":["الخارجة","الداخلة","الفرافرة","باريس","بلاط"],
+    "البحر الأحمر":["الغردقة","رأس غارب","سفاجا","القصير","مرسى علم","الشلاتين","حلايب"]
+};
+const productCategories = ["مسكنات","مضادات حيوية","فيتامينات","أدوية مزمنة","مستلزمات طبية","أجهزة طبية","عناية شخصية"];
+
+function showMessage(m,t='success'){ const c={success:'#0ea882',error:'#e63946',warning:'#f4a261'}; const d=document.createElement('div'); d.style.cssText=`position:fixed;top:20px;left:20px;right:20px;max-width:380px;margin:auto;background:${c[t]};color:white;padding:10px 18px;border-radius:30px;z-index:9999;text-align:center;font-weight:700;font-size:0.85rem;box-shadow:0 8px 20px rgba(0,0,0,0.2);`; d.innerText=m; document.body.appendChild(d); setTimeout(()=>d.remove(),3000); }
+function normalizeArabicText(v){ return (v||'').toString().trim().toLowerCase().replace(/[إأآا]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function openSidebar(){ if(currentUser){ document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('show'); } }
+
+async function initLocationsData(){ try{ const s=await db.ref('locations/cities').once('value'); if(!s.exists()){ const d={}; for(let g in defaultGovernorates){ if(g==="اختر المحافظة") continue; d[g]={}; defaultGovernorates[g].forEach(c=>{ d[g][c]=[]; }); } await db.ref('locations/cities').set(d); } }catch(e){} }
+async function saveNewCity(gov,center,city){ if(!gov||!center||!city) return false; try{ const ref=db.ref(`locations/cities/${gov}/${center}`); const s=await ref.once('value'); let c=s.exists()?s.val():[]; if(!c.includes(city)){ c.push(city); c.sort(); await ref.set(c); } return true; }catch(e){ return false; } }
+async function getCitiesFromFB(gov,center){ if(!gov||!center) return[]; try{ const s=await db.ref(`locations/cities/${gov}/${center}`).once('value'); return s.exists()?s.val():[]; }catch(e){ return[]; } }
+async function updateCityOptions(govId,centerId,cityId,newId,sel=''){ const gov=document.getElementById(govId)?.value,center=document.getElementById(centerId)?.value; const citySel=document.getElementById(cityId),newDiv=document.getElementById(newId); if(!citySel) return; if(!gov||!center){ citySel.innerHTML='<option value="">اختر المركز أولاً</option>'; citySel.disabled=true; if(newDiv) newDiv.style.display='none'; return; } const cities=await getCitiesFromFB(gov,center); let opts='<option value="">اختر المدينة/القرية</option>'; cities.forEach(c=>{ opts+=`<option value="${c}" ${sel===c?'selected':''}>${c}</option>`; }); opts+='<option value="__other__" style="color:#0ea882;font-weight:bold;">➕ أخرى</option>'; citySel.innerHTML=opts; citySel.disabled=false; if(newDiv) newDiv.style.display='none'; }
+function updateCenterOptions(govId,centerId,sel=''){ const gov=document.getElementById(govId)?.value,centerSel=document.getElementById(centerId); if(!centerSel) return; if(gov&&defaultGovernorates[gov]){ let opts='<option value="">اختر المركز</option>'; defaultGovernorates[gov].forEach(c=>{ opts+=`<option value="${c}" ${sel===c?'selected':''}>${c}</option>`; }); centerSel.innerHTML=opts; centerSel.disabled=false; }else{ centerSel.innerHTML='<option value="">اختر المحافظة أولاً</option>'; centerSel.disabled=true; } }
+
+async function loadCart(){ if(!currentUser||currentUser.type!=='client') return; const s=await db.ref(`cart/${currentUser.username}`).once('value'); currentCart=s.exists()?s.val():{items:{}}; updateCartBadge(); }
+async function saveCart(){ if(!currentUser||currentUser.type!=='client') return; await db.ref(`cart/${currentUser.username}`).set(currentCart); updateCartBadge(); }
+function updateCartBadge(){ const c=Object.values(currentCart.items).reduce((s,i)=>s+(i.quantity||0),0); ['cartBadge','sideCartBadge'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerText=c; }); }
+async function addToCart(p){ if(!currentUser||currentUser.type!=='client'){ showMessage('سجل دخول كمريض','error'); return; } const k=p.id; if(currentCart.items[k]) currentCart.items[k].quantity++; else currentCart.items[k]={ productId:p.id, name:p.name, pharmacyId:p.pharmacyId, pharmacyName:p.pharmacyName||'صيدلية', pharmacyPhone:p.pharmacyPhone||'', price:p.price, quantity:1, imageUrl:p.imageUrl||null }; await saveCart(); showMessage(`تم إضافة ${p.name}`,'success'); }
+async function removeFromCart(pid){ delete currentCart.items[pid]; await saveCart(); }
+async function updateCartItemQuantity(pid,q){ if(q<=0) await removeFromCart(pid); else if(currentCart.items[pid]){ currentCart.items[pid].quantity=q; await saveCart(); } }
+
+async function getPharmacyProducts(pid){ const s=await db.ref('products').once('value'); const p=[]; s.forEach(c=>{ const d=c.val(); if(d.pharmacyId===pid) p.push({ id:c.key, ...d }); }); return p; }
+async function getAllProducts(){ const s=await db.ref('products').once('value'); const p=[]; s.forEach(c=>{ const d=c.val(); p.push({ id:c.key, ...d, pharmacyId:d.pharmacyId||'', pharmacyName:d.pharmacyName||'صيدلية', pharmacyPhone:d.pharmacyPhone||'' }); }); return p; }
+async function saveProduct(d){ await db.ref('products').push({...d, createdAt:Date.now()}); showMessage('تم إضافة المنتج','success'); }
+async function updateProduct(id,u){ await db.ref(`products/${id}`).update(u); showMessage('تم التحديث','success'); }
+async function deleteProduct(id){ await db.ref(`products/${id}`).remove(); showMessage('تم الحذف','success'); }
+
+async function getUserData(u){ const s=await db.ref('users/'+u).once('value'); return s.val(); }
+async function loginUser(u,p,remember=false){ const s=await db.ref('users').orderByChild('username').equalTo(u).once('value'); if(s.exists()){ let user=null; s.forEach(c=>{ user=c.val(); }); if(user&&user.password===p){ currentUser={username:u,...user}; if(remember){ localStorage.setItem('rememberedUser',u); localStorage.setItem('rememberedPass',p); }else{ localStorage.removeItem('rememberedUser'); localStorage.removeItem('rememberedPass'); } updateUI(); if(currentUser.type==='client') await loadCart(); renderPage(); showMessage('مرحباً!','success'); return true; }else{ showMessage('كلمة مرور خاطئة','error'); return false; } }else{ showMessage('المستخدم غير موجود','error'); return false; } }
+async function registerUser(d){ const s=await db.ref('users').orderByChild('username').equalTo(d.username).once('value'); if(s.exists()){ showMessage('اسم المستخدم موجود','error'); return false; } await db.ref('users/'+d.username).set(d); currentUser={username:d.username,...d}; updateUI(); renderPage(); showMessage('تم التسجيل!','success'); return true; }
+async function updateProfile(u){ await db.ref('users/'+currentUser.username).update(u); Object.assign(currentUser,u); updateUI(); showMessage('تم الحفظ','success'); }
+async function logout(){ currentUser=null; currentCart={items:{}}; updateUI(); showAuthScreen(); closeSidebar(); }
+function updateUI(){ const mb=document.getElementById('menuBtn'),ci=document.getElementById('cartIcon'); const sc=document.getElementById('sideCart'),so=document.getElementById('sideOrders'),sp=document.getElementById('sideProducts'); if(currentUser){ let dn=currentUser.username; if(currentUser.type==='pharmacy') dn=currentUser.pharmacyName||currentUser.username; else if(currentUser.type==='delivery') dn=currentUser.deliveryName||currentUser.username; else dn=currentUser.fullName||currentUser.username; document.getElementById('sidebarUsername').innerText=dn; document.getElementById('sidebarUserType').innerText=currentUser.type==='client'?'مريض':(currentUser.type==='pharmacy'?'صيدلية':'مندوب توصيل'); document.getElementById('sidebarAvatar').innerHTML=currentUser.avatar?`<img src="${currentUser.avatar}">`:'<i class="fas fa-user-circle" style="font-size:2rem;color:white;"></i>'; mb.classList.remove('hidden'); if(currentUser.type==='client'){ ci.style.display='block'; sc.style.display='flex'; so.style.display='flex'; sp.style.display='none'; document.getElementById('sideHomeText').innerText='المتجر'; }else if(currentUser.type==='pharmacy'){ ci.style.display='none'; sc.style.display='none'; so.style.display='flex'; sp.style.display='flex'; document.getElementById('sideHomeText').innerText='لوحة التحكم'; }else{ ci.style.display='none'; sc.style.display='none'; so.style.display='none'; sp.style.display='none'; document.getElementById('sideHomeText').innerText='طلبات التوصيل'; } }else{ mb.classList.add('hidden'); ci.style.display='none'; } updateCartBadge(); }
+
+async function cleanupOldOrders(){ const now=Date.now(); const s=await db.ref('orders').once('value'); const u={}; s.forEach(o=>{ const order=o.val(); if(order.pharmacyOrders){ for(let pid in order.pharmacyOrders){ const p=order.pharmacyOrders[pid]; if((p.status==='completed'||p.status==='rejected')&&p.statusChangedAt&&now-p.statusChangedAt>5*60*1000){ u[`orders/${o.key}/pharmacyOrders/${pid}/hidden`]=true; } } } if(order.deliveryStatus==='delivered'&&order.deliveredAt&&now-order.deliveredAt>12*60*60*1000){ u[`orders/${o.key}/hiddenForClient`]=true; } if(order.deliveryStatus==='delivered'&&order.deliveredAt&&order.deliveryAgentId&&now-order.deliveredAt>5*60*1000){ u[`delivery_agents/${order.deliveryAgentId}/current_orders/${o.key}/hidden`]=true; } }); if(Object.keys(u).length) await db.ref().update(u); }
+setInterval(cleanupOldOrders,60000);
+
+async function createOrder(info){ const items=Object.values(currentCart.items); if(items.length===0){ showMessage('السلة فارغة','error'); return; } const po={}; for(const item of items){ if(!item.pharmacyId) continue; if(!po[item.pharmacyId]){ const ps=await db.ref(`users/${item.pharmacyId}`).once('value'); const ph=ps.val(); po[item.pharmacyId]={ pharmacyName:item.pharmacyName||ph?.pharmacyName||'صيدلية', pharmacyPhone:ph?.phone||item.pharmacyPhone||'غير متوفر', items:[], subtotal:0, status:'pending' }; } po[item.pharmacyId].items.push({ productId:item.productId, name:item.name, price:item.price, quantity:item.quantity }); po[item.pharmacyId].subtotal+=item.price*item.quantity; } const od={ clientId:currentUser.username, clientName:info.name, clientPhone:info.phone, clientAddress:info.address, clientAvatar:currentUser.avatar||null, pharmacyOrders:po, totalAmount:Object.values(po).reduce((s,p)=>s+p.subtotal,0), status:'pending', deliveryStatus:'waiting_pharmacies', createdAt:Date.now(), governorate:currentUser.governorate, center:currentUser.center, city:currentUser.city, deliveryAgentId:null, deliveryAgentName:null, deliveryAgentPhone:null }; await db.ref('orders').push(od); await db.ref(`users/${currentUser.username}`).update({ phone:info.phone, address:info.address }); currentCart={items:{}}; await saveCart(); showMessage('تم إرسال الطلب!','success'); renderOrders(); }
+async function getClientOrders(cid){ const s=await db.ref('orders').orderByChild('clientId').equalTo(cid).once('value'); const o=[]; s.forEach(c=>{ const order=c.val(); if(!order.hiddenForClient) o.push({ id:c.key, ...order }); }); return o.sort((a,b)=>b.createdAt-a.createdAt); }
+async function getPharmacyOrders(pid){ const s=await db.ref('orders').once('value'); const o=[]; s.forEach(c=>{ const order=c.val(); if(order.pharmacyOrders&&order.pharmacyOrders[pid]){ const p=order.pharmacyOrders[pid]; if(!p.hidden) o.push({ id:c.key, ...order, pharmacyData:p }); } }); return o.sort((a,b)=>b.createdAt-a.createdAt); }
+
+async function pharmacyAcceptOrder(oid,pid){ await db.ref(`orders/${oid}/pharmacyOrders/${pid}`).update({ status:'accepted', statusChangedAt:Date.now() }); await db.ref(`orders/${oid}`).update({ deliveryStatus:'accepting' }); showMessage('تم قبول الطلب','success'); renderOrders(); }
+async function pharmacyPrepareOrder(oid,pid){ await db.ref(`orders/${oid}/pharmacyOrders/${pid}`).update({ status:'ready', statusChangedAt:Date.now() }); const s=await db.ref(`orders/${oid}`).once('value'); const o=s.val(); let allReady=true; for(let id in o.pharmacyOrders){ if(o.pharmacyOrders[id].status!=='ready'&&o.pharmacyOrders[id].status!=='rejected'){ allReady=false; break; } } if(allReady){ await db.ref(`orders/${oid}`).update({ deliveryStatus:'ready_for_pickup' }); } showMessage('تم تجهيز الطلب للشحن','success'); renderOrders(); }
+function openRejectModal(oid){ const m=document.createElement('div'); m.className='modal'; m.style.display='flex'; m.innerHTML=`<div class="modal-content"><h3>سبب رفض الطلب</h3><div class="input-group"><i class="fas fa-pen"></i><textarea id="rejectReason" placeholder="اكتب سبب الرفض..." rows="3"></textarea></div><div class="modal-buttons"><button class="reject-btn" id="confirmReject">تأكيد الرفض</button><button onclick="this.closest('.modal').remove()">إلغاء</button></div></div>`; document.body.appendChild(m); document.getElementById('confirmReject').onclick=async()=>{ const r=document.getElementById('rejectReason').value.trim(); if(!r){ showMessage('اكتب سبب الرفض','error'); return; } m.remove(); await db.ref(`orders/${oid}/pharmacyOrders/${currentUser.username}`).update({ status:'rejected', rejectReason:r, statusChangedAt:Date.now() }); showMessage('تم رفض الطلب','success'); renderOrders(); }; m.addEventListener('click',e=>{ if(e.target===m) m.remove(); }); }
+
+async function getAvailableOrders(du){ const s=await db.ref('orders').orderByChild('deliveryStatus').equalTo('ready_for_pickup').once('value'); const o=[]; s.forEach(c=>{ const order=c.val(); if(order.governorate===du.governorate&&order.center===du.center&&order.city===du.city&&!order.deliveryAgentId) o.push({ id:c.key, ...order }); }); return o.sort((a,b)=>b.createdAt-a.createdAt); }
+async function getMyDeliveries(dun){ const s=await db.ref(`delivery_agents/${dun}/current_orders`).once('value'); const mo=s.exists()?s.val():{}; const o=[]; for(let oid in mo){ if(mo[oid].hidden) continue; const os=await db.ref(`orders/${oid}`).once('value'); const order=os.val(); if(order&&order.deliveryStatus==='delivering') o.push({ id:oid, ...order }); } return o.sort((a,b)=>b.createdAt-a.createdAt); }
+async function claimOrder(oid){ 
+    if(!currentUser||currentUser.type!=='delivery') return; 
+    const s=await db.ref(`orders/${oid}`).once('value'); 
+    const o=s.val(); 
+    if(o.deliveryAgentId){ 
+        showMessage('تم قبوله من مندوب آخر','warning'); 
+        renderDeliveryOrders(); 
+        return; 
+    } 
+    await db.ref(`orders/${oid}`).update({ 
+        deliveryAgentId:currentUser.username, 
+        deliveryAgentName:currentUser.deliveryName||currentUser.username, 
+        deliveryAgentPhone:currentUser.phone, 
+        deliveryStatus:'delivering', 
+        assignedAt:Date.now() 
+    }); 
+    await db.ref(`delivery_agents/${currentUser.username}/current_orders/${oid}`).set({ 
+        orderId:oid, 
+        assignedAt:Date.now(), 
+        status:'delivering' 
+    }); 
+    for(let pid in o.pharmacyOrders){ 
+        await db.ref(`orders/${oid}/pharmacyOrders/${pid}`).update({ 
+            status:'delivering', 
+            statusChangedAt:Date.now() 
+        }); 
+    } 
+    showMessage('تم قبول الطلب! جاري التوصيل','success'); 
+    renderDeliveryOrders(); 
+}
+
+async function markDelivered(oid){
+    if(!currentUser||currentUser.type!=='delivery') return;
+    const ts=Date.now();
+    const snap=await db.ref(`orders/${oid}`).once('value');
+    const order=snap.val();
+    if(!order){ showMessage('الطلب غير موجود','error'); return; }
+    await db.ref(`orders/${oid}`).update({ deliveryStatus:'delivered', status:'completed', deliveredAt:ts });
+    for(let pid in order.pharmacyOrders){
+        await db.ref(`orders/${oid}/pharmacyOrders/${pid}`).update({ status:'completed', statusChangedAt:ts });
+        const pharmacyOrder=order.pharmacyOrders[pid];
+        if(pharmacyOrder.items && Array.isArray(pharmacyOrder.items)){
+            for(const item of pharmacyOrder.items){
+                if(item.productId){
+                    try {
+                        const productSnap=await db.ref(`products/${item.productId}`).once('value');
+                        if(productSnap.exists()){
+                            const product=productSnap.val();
+                            const currentQty=product.quantity||0;
+                            const orderedQty=item.quantity||0;
+                            const newQty=Math.max(0, currentQty-orderedQty);
+                            await db.ref(`products/${item.productId}`).update({ quantity:newQty });
+                        }
+                    } catch(err) {}
+                }
+            }
+        }
+    }
+    await db.ref(`delivery_agents/${currentUser.username}/current_orders/${oid}`).update({ status:'completed', deliveredAt:ts });
+    showMessage('✅ تم تأكيد التوصيل وإنقاص المخزون!','success');
+    renderDeliveryOrders();
+}
+
+function showAuthScreen(){ closeSidebar(); document.getElementById('appContent').innerHTML=`<div style="display:flex;justify-content:center;align-items:center;min-height:80vh;padding:1rem;"><div style="background:#fff;border-radius:20px;padding:1.2rem;max-width:400px;width:100%;box-shadow:0 15px 40px rgba(0,0,0,0.2);"><div style="text-align:center;margin-bottom:1rem;"><i class="fas fa-truck-medical" style="font-size:2.2rem;color:#0ea882;"></i><h2 style="color:#0b2c37;font-size:1.3rem;font-weight:900;"> صيدليتي | توصيل الادوية</h2></div><div id="authForm"></div></div></div>`; addFooter(); renderAuthForm('login'); }
+
+function renderAuthForm(type){ const govOpts=Object.keys(defaultGovernorates).map(g=>`<option value="${g}">${g}</option>`).join(''); if(type==='login'){ const su=localStorage.getItem('rememberedUser')||'', sp=localStorage.getItem('rememberedPass')||''; document.getElementById('authForm').innerHTML=`<div class="input-group"><i class="fas fa-user"></i><input type="text" id="loginUsername" placeholder="اسم المستخدم" value="${su}"></div><div class="input-group" style="position:relative;"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="كلمة السر" value="${sp}"><i class="fas fa-eye toggle-password" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);cursor:pointer;color:#0ea882;"></i></div><div style="display:flex;align-items:center;margin:0.6rem 0;gap:6px;"><input type="checkbox" id="rememberMeCheckbox" ${su?'checked':''}><label style="font-weight:700;font-size:0.85rem;">تذكرني</label></div><button id="doLoginBtn" style="width:100%;padding:10px;">🚀 دخول</button><hr style="margin:12px 0;"><p style="text-align:center;font-size:0.85rem;">ليس لديك حساب؟ <a href="#" id="switchToReg" style="color:#0ea882;font-weight:800;">سجل الآن</a></p>`; document.querySelector('.toggle-password').addEventListener('click',function(){ const inp=document.getElementById('loginPassword'); inp.type=inp.type==='password'?'text':'password'; this.classList.toggle('fa-eye'); this.classList.toggle('fa-eye-slash'); }); document.getElementById('doLoginBtn').onclick=async()=>{ const u=document.getElementById('loginUsername').value.trim(), p=document.getElementById('loginPassword').value; if(!u||!p){ showMessage('أدخل البيانات','error'); return; } await loginUser(u,p,document.getElementById('rememberMeCheckbox').checked); }; document.getElementById('switchToReg').onclick=e=>{ e.preventDefault(); renderAuthForm('register'); }; }else{ document.getElementById('authForm').innerHTML=`<div class="input-group"><i class="fas fa-user-tag"></i><select id="regType"><option value="client">📋 مريض</option><option value="pharmacy">💊 صيدلية</option><option value="delivery">🛵 مندوب توصيل</option></select></div><div class="input-group"><i class="fas fa-user"></i><input type="text" id="regUsername" placeholder="اسم المستخدم"></div><div class="input-group"><i class="fas fa-signature"></i><input type="text" id="regDisplayName" placeholder="الاسم الظاهر"></div><div class="input-group" style="position:relative;"><i class="fas fa-lock"></i><input type="password" id="regPassword" placeholder="كلمة السر"><i class="fas fa-eye toggle-password" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);cursor:pointer;color:#0ea882;"></i></div><div class="location-group"><label>المحافظة</label><select id="regGovernorate" class="location-select">${govOpts}</select></div><div class="location-group"><label>المركز</label><select id="regCenter" class="location-select" disabled><option>اختر المحافظة أولاً</option></select></div><div class="location-group"><label>المدينة/القرية</label><select id="regCity" class="location-select" disabled><option>اختر المركز أولاً</option></select></div><div id="newCityContainer" style="display:none;" class="input-group"><i class="fas fa-plus-circle"></i><input type="text" id="newCityInput" placeholder="أدخل اسم المدينة/القرية الجديدة"></div><div id="contactFields" style="display:none;"><div class="input-group"><i class="fas fa-phone"></i><input type="tel" id="phoneNumber" placeholder="رقم الهاتف"></div></div><button id="doRegisterBtn" style="width:100%;padding:10px;">🎉 إنشاء حساب</button><hr style="margin:12px 0;"><p style="text-align:center;font-size:0.85rem;">لديك حساب؟ <a href="#" id="switchToLogin" style="color:#0ea882;font-weight:800;">تسجيل الدخول</a></p>`; document.querySelector('.toggle-password').addEventListener('click',function(){ const inp=document.getElementById('regPassword'); inp.type=inp.type==='password'?'text':'password'; this.classList.toggle('fa-eye'); this.classList.toggle('fa-eye-slash'); }); document.getElementById('regType').addEventListener('change',function(){ const t=this.value; document.getElementById('regDisplayName').placeholder=t==='pharmacy'?'اسم الصيدلية':t==='delivery'?'اسم المندوب':'الاسم الكامل'; document.getElementById('contactFields').style.display=(t==='pharmacy'||t==='delivery')?'block':'none'; }); document.getElementById('regType').dispatchEvent(new Event('change')); document.getElementById('regGovernorate').addEventListener('change',function(){ updateCenterOptions('regGovernorate','regCenter'); document.getElementById('regCity').innerHTML='<option>اختر المركز أولاً</option>'; document.getElementById('regCity').disabled=true; document.getElementById('newCityContainer').style.display='none'; }); document.getElementById('regCenter').addEventListener('change',async function(){ await updateCityOptions('regGovernorate','regCenter','regCity','newCityContainer'); }); document.getElementById('regCity').addEventListener('change',function(){ document.getElementById('newCityContainer').style.display=this.value==='__other__'?'block':'none'; }); document.getElementById('doRegisterBtn').onclick=async()=>{ const username=document.getElementById('regUsername').value.trim(), password=document.getElementById('regPassword').value, type=document.getElementById('regType').value; const gov=document.getElementById('regGovernorate').value, center=document.getElementById('regCenter').value; let city=document.getElementById('regCity').value; if(!username||!password||!gov||!center){ showMessage('جميع الحقول الأساسية مطلوبة','error'); return; } const dn=document.getElementById('regDisplayName').value.trim(); let phone=''; if(type==='pharmacy'||type==='delivery'){ phone=document.getElementById('phoneNumber').value; if(!phone){ showMessage('رقم الهاتف مطلوب','error'); return; } } if(city==='__other__'){ const nc=document.getElementById('newCityInput').value.trim(); if(!nc){ showMessage('أدخل اسم المدينة','error'); return; } await saveNewCity(gov,center,nc); city=nc; } const ud={ username, password, type, avatar:'', createdAt:Date.now(), governorate:gov, center, city }; if(type==='pharmacy'){ ud.pharmacyName=dn||username; ud.phone=phone; }else if(type==='delivery'){ ud.deliveryName=dn||username; ud.phone=phone; }else{ ud.fullName=dn||username; } await registerUser(ud); }; document.getElementById('switchToLogin').onclick=e=>{ e.preventDefault(); renderAuthForm('login'); }; } }
+
+function renderPage(){ if(!currentUser) showAuthScreen(); else if(currentUser.type==='client') renderClientStore(); else if(currentUser.type==='pharmacy') renderPharmacyDashboard(); else renderDeliveryOrders(); }
+
+// ============ ✅ المتجر - عرض أفقي ✅============
+async function renderClientStore(){ 
+    const products=await getAllProducts(); 
+    const cats=[...new Set(products.map(p=>p.category).filter(Boolean))]; 
+    document.getElementById('appContent').innerHTML=`
+    <div class="container">
+        <div class="dashboard-hero"><h2>🛒 متجر صيدليتي</h2><p>تسوق الأدوية والمستلزمات الطبية بأفضل الأسعار</p></div>
+        <div class="toolbar">
+            <div class="search-shell"><i class="fas fa-search"></i><input type="text" id="searchProducts" placeholder="ابحث عن منتج..."></div>
+            <div class="select-shell"><i class="fas fa-tags"></i><select id="categoryFilter"><option value="all">كل الفئات</option>${cats.map(c=>`<option>${c}</option>`).join('')}</select></div>
+            <div class="select-shell"><i class="fas fa-sort"></i><select id="sortProducts"><option value="name">الاسم</option><option value="price_asc">السعر من الأقل</option><option value="price_desc">السعر من الأعلى</option></select></div>
+        </div>
+        <div id="productsGrid" class="cards-grid"></div>
+    </div>`; 
+    addFooter(); 
+    const apply=()=>{ 
+        const q=normalizeArabicText(document.getElementById('searchProducts')?.value||''); 
+        const cat=document.getElementById('categoryFilter')?.value||'all'; 
+        const sort=document.getElementById('sortProducts')?.value||'name'; 
+        let f=products.filter(p=>(!q||normalizeArabicText(p.name).includes(q))&&(cat==='all'||p.category===cat)); 
+        f.sort((a,b)=>sort==='price_asc'?a.price-b.price:sort==='price_desc'?b.price-a.price:(a.name||'').localeCompare(b.name||'','ar')); 
+        displayProducts(f); 
+    }; 
+    ['searchProducts','categoryFilter','sortProducts'].forEach(id=>{ 
+        const el=document.getElementById(id); 
+        if(el){ el.addEventListener('input',apply); el.addEventListener('change',apply); } 
+    }); 
+    apply(); 
+}
+
+// ✅ دالة عرض المنتجات بتصميم أفقي مع تنظيم عمودي للمعلومات
+function displayProducts(products){
+    const grid=document.getElementById('productsGrid');
+    if(!grid) return;
+    if(products.length===0){ 
+        grid.innerHTML='<div class="empty-state"><i class="fas fa-box-open"></i><h3>لا توجد منتجات متطابقة</h3></div>'; 
+        return; 
+    }
+    grid.innerHTML=products.map(p=>{
+        const inCart=currentCart.items[p.id];
+        const sc=p.quantity>10?'in':p.quantity>0?'low':'out';
+        const st=p.quantity>10?'متوفر':p.quantity>0?'قليل':'نفذ';
+        const desc=p.description||'منتج طبي عالي الجودة';
+        const imgHtml=p.imageUrl?`<img src="${p.imageUrl}" alt="${p.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fas fa-capsules\\' style=\\'font-size:3.5rem;color:#b0c4d9;\\'></i>'">`:'<i class="fas fa-capsules" style="font-size:3.5rem;color:#b0c4d9;"></i>';
+        return `
+        <div class="product-card">
+            <div class="product-image">${imgHtml}</div>
+            <div class="product-info">
+                <div class="product-details">
+                    <h3 class="product-name">${p.name}</h3>
+                    <div class="product-description">📝 ${desc}</div>
+                    <span class="product-category-badge"><i class="fas fa-tag"></i> ${p.category||'عام'}</span>
+                </div>
+                <div class="product-footer">
+                    <span class="product-price">💰 ${p.price?.toFixed(2)} ج.م</span>
+                    <span class="product-stock ${sc}">${st}</span>
+                    <button class="add-to-cart-btn" onclick="addToCart(${JSON.stringify(p).replace(/"/g,'&quot;')})" ${p.quantity<=0?'disabled':''}>
+                        <i class="fas fa-cart-plus"></i> ${inCart?`بالسلة (${inCart.quantity})`:'أضف للسلة'}
+                    </button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderCart(){ if(!currentUser||currentUser.type!=='client'){ renderPage(); return; } const items=Object.values(currentCart.items), subtotal=items.reduce((s,i)=>s+(i.price||0)*(i.quantity||0),0); let html=`<div class="container"><button class="back-button" onclick="goBack()"><i class="fas fa-arrow-right"></i> رجوع</button><div class="dashboard-hero"><h2><i class="fas fa-shopping-cart"></i> سلة التسوق</h2></div><div class="cart-container">`; if(items.length===0){ html+='<div class="empty-state"><i class="fas fa-shopping-cart"></i><h3>السلة فارغة</h3><button onclick="renderClientStore()">تصفح المتجر</button></div>'; }else{ const groups={}; items.forEach(i=>{ const pid=i.pharmacyId||'unknown'; if(!groups[pid]) groups[pid]={ name:i.pharmacyName||'صيدلية', items:[] }; groups[pid].items.push(i); }); for(let pid in groups){ html+=`<div class="cart-pharmacy-group"><h4><i class="fas fa-store-alt"></i> ${groups[pid].name}</h4>`; groups[pid].items.forEach(item=>{ html+=`<div class="cart-item"><div class="cart-item-image">${item.imageUrl?`<img src="${item.imageUrl}" alt="${item.name}" onerror="this.innerHTML='<i class=\\'fas fa-capsules\\'></i>'">`:'<i class="fas fa-capsules"></i>'}</div><div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">${(item.price||0).toFixed(2)} ج.م</div></div><div class="cart-item-controls"><button class="quantity-btn" onclick="updateCartItemQuantity('${item.productId}',${item.quantity-1});renderCart();">−</button><span class="cart-item-quantity">${item.quantity}</span><button class="quantity-btn" onclick="updateCartItemQuantity('${item.productId}',${item.quantity+1});renderCart();">+</button><i class="fas fa-trash-alt remove-item-btn" onclick="removeFromCart('${item.productId}');renderCart();"></i></div></div>`; }); html+='</div>'; } html+=`<div class="cart-summary"><div class="cart-total"><span>الإجمالي:</span><span>${subtotal.toFixed(2)} ج.م</span></div><button class="checkout-btn" onclick="openCheckoutModal()"><i class="fas fa-check-circle"></i> متابعة الشراء</button></div>`; } html+='</div></div>'; document.getElementById('appContent').innerHTML=html; addFooter(); }
+function openCheckoutModal(){ const m=document.createElement('div'); m.className='modal'; m.style.display='flex'; m.innerHTML=`<div class="modal-content"><h3>تفاصيل التوصيل</h3><div class="input-group"><i class="fas fa-user"></i><input type="text" id="checkoutName" placeholder="الاسم الكامل" value="${currentUser?.fullName||currentUser?.username||''}"></div><div class="input-group"><i class="fas fa-phone"></i><input type="tel" id="checkoutPhone" placeholder="رقم الهاتف" value="${currentUser?.phone||''}"></div><div class="input-group"><i class="fas fa-map-pin"></i><textarea id="checkoutAddress" placeholder="العنوان بالتفصيل" rows="2">${currentUser?.address||''}</textarea></div><div class="modal-buttons"><button class="accept-btn" id="confirmCheckoutBtn">تأكيد الطلب</button><button class="reject-btn" onclick="this.closest('.modal').remove()">إلغاء</button></div></div>`; document.body.appendChild(m); document.getElementById('confirmCheckoutBtn').onclick=async()=>{ const n=document.getElementById('checkoutName').value.trim(), p=document.getElementById('checkoutPhone').value.trim(), a=document.getElementById('checkoutAddress').value.trim(); if(!n||!p||!a){ showMessage('جميع الحقول مطلوبة','error'); return; } m.remove(); await createOrder({ name:n, phone:p, address:a }); }; m.addEventListener('click',e=>{ if(e.target===m) m.remove(); }); }
+
+async function renderOrders(){ if(!currentUser){ showAuthScreen(); return; } let html=`<div class="container"><button class="back-button" onclick="goBack()"><i class="fas fa-arrow-right"></i> رجوع</button><div class="dashboard-hero"><h2>📋 طلباتي</h2></div><div class="orders-container" id="ordersList"></div></div>`; document.getElementById('appContent').innerHTML=html; addFooter(); const container=document.getElementById('ordersList'), now=Date.now(); if(currentUser.type==='client'){ const orders=await getClientOrders(currentUser.username); if(orders.length===0){ container.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><h3>لا توجد طلبات</h3></div>'; return; } container.innerHTML=orders.map(o=>{ const sm={ 'waiting_pharmacies':'⏳ في انتظار الصيدليات', 'accepting':'🔄 جاري قبولها', 'ready_for_pickup':'📦 جاهز للشحن', 'delivering':'🛵 جاري التوصيل', 'delivered':'✅ تم التوصيل' }; let di=''; if(o.deliveryAgentName) di=`<div class="delivery-info"><i class="fas fa-motorcycle"></i> المندوب: ${o.deliveryAgentName} - ${o.deliveryAgentPhone}</div>`; return `<div class="order-card"><div class="order-header"><h4>طلب #${o.id.slice(-6)}</h4><span class="order-status">${sm[o.deliveryStatus]||o.deliveryStatus}</span></div><div class="order-address"><i class="fas fa-map-marker-alt"></i> ${o.clientAddress}</div>${di}<div style="display:flex;justify-content:space-between;font-weight:900;margin-top:6px;"><span>الإجمالي:</span><span>${o.totalAmount?.toFixed(2)} ج.م</span></div></div>`; }).join(''); }else if(currentUser.type==='pharmacy'){ const orders=await getPharmacyOrders(currentUser.username); if(orders.length===0){ container.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><h3>لا توجد طلبات واردة</h3></div>'; return; } container.innerHTML=orders.map(o=>{ const p=o.pharmacyData; let st='', sc=''; if(p.status==='pending'){ st='⏳ بانتظار القبول'; sc='pending'; }else if(p.status==='accepted'){ st='✅ مقبول - جاري التجهيز'; sc='preparing'; }else if(p.status==='ready'){ st='📦 جاهز للشحن'; sc='ready'; }else if(p.status==='delivering'){ st='🛵 جاري التوصيل'; sc='delivering'; }else if(p.status==='completed'){ st='✅ مكتمل - تم التوصيل'; sc='completed'; }else if(p.status==='rejected'){ st='❌ مرفوض'; sc='rejected'; } let acts=''; if(p.status==='pending') acts=`<div class="order-actions"><button class="accept-btn" onclick="pharmacyAcceptOrder('${o.id}','${currentUser.username}')">✔ قبول</button><button class="reject-btn" onclick="openRejectModal('${o.id}')">✘ رفض</button></div>`; else if(p.status==='accepted') acts=`<button onclick="pharmacyPrepareOrder('${o.id}','${currentUser.username}')">📦 تأكيد تجهيز الطلب</button>`; else if(p.status==='ready'&&o.deliveryAgentName) acts=`<div class="delivery-info"><i class="fas fa-motorcycle"></i> المندوب: ${o.deliveryAgentName} - ${o.deliveryAgentPhone}</div>`; else if(p.status==='delivering') acts=`<p style="color:#2e7d32;font-weight:700;">🛵 جاري توصيل الطلب للمريض...</p>`; else if(p.status==='completed') acts=`<p style="color:#0a5e4e;font-weight:700;">✅ تم التوصيل بنجاح</p>`; if((p.status==='completed'||p.status==='rejected')&&p.statusChangedAt){ const rem=Math.max(0,5-Math.floor((now-p.statusChangedAt)/60000)); acts+=`<div class="timer-note"><i class="far fa-clock"></i> تختفي خلال ${rem} دقيقة</div>`; } return `<div class="order-card"><div class="order-header"><div class="order-client"><div class="client-avatar"><i class="fas fa-user"></i></div><div class="client-info"><h4>${o.clientName}</h4><p>📞 ${o.clientPhone}</p></div></div><span class="order-status ${sc}">${st}</span></div>${p.rejectReason?`<div class="reason-text">سبب الرفض: ${p.rejectReason}</div>`:''}<div class="order-address"><i class="fas fa-map-marker-alt"></i> ${o.clientAddress}</div>${p.items.map(i=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #dce6ed;"><span>${i.name} <span style="background:#0ea882;color:white;padding:2px 8px;border-radius:12px;font-size:0.75rem;">${i.quantity}</span></span><span style="font-weight:800;color:#08755c;">${(i.price*i.quantity).toFixed(2)} ج.م</span></div>`).join('')}<div style="display:flex;justify-content:space-between;font-weight:900;margin-top:6px;"><span>الإجمالي:</span><span>${p.subtotal?.toFixed(2)} ج.م</span></div>${acts}</div>`; }).join(''); } }
+
+async function renderPharmacyDashboard(){ const p=await getPharmacyProducts(currentUser.username), o=await getPharmacyOrders(currentUser.username); const pending=o.filter(x=>x.pharmacyData?.status==='pending').length; document.getElementById('appContent').innerHTML=`<div class="container"><div class="dashboard-hero"><h2>📊 لوحة التحكم</h2><p>${currentUser.pharmacyName||currentUser.username}</p></div><div class="stats-grid"><div class="stat-card" onclick="renderPharmacyProducts()"><i class="fas fa-box"></i><div class="stat-value">${p.length}</div><div class="stat-label">منتج</div></div><div class="stat-card" onclick="renderOrders()"><i class="fas fa-shopping-cart"></i><div class="stat-value">${o.length}</div><div class="stat-label">طلب</div></div><div class="stat-card" onclick="renderOrders()"><i class="fas fa-clock"></i><div class="stat-value">${pending}</div><div class="stat-label">قيد الانتظار</div></div></div></div>`; addFooter(); }
+
+async function renderPharmacyProducts(){ const p=await getPharmacyProducts(currentUser.username); document.getElementById('appContent').innerHTML=`<div class="container"><button class="back-button" onclick="goBack()"><i class="fas fa-arrow-right"></i> رجوع</button><div class="dashboard-hero"><h2>📦 منتجاتي</h2><button onclick="openAddProductModal()" style="margin-top:6px;"><i class="fas fa-plus"></i> إضافة منتج جديد</button></div><div class="pharmacy-cards-grid" id="productsList"></div></div>`; addFooter(); const grid=document.getElementById('productsList'); if(p.length===0){ grid.innerHTML='<div class="empty-state"><p>لا توجد منتجات بعد</p></div>'; return; } grid.innerHTML=p.map(x=>`<div class="pharmacy-product-card"><div class="pharmacy-product-image">${x.imageUrl?`<img src="${x.imageUrl}" alt="${x.name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-capsules\\' style=\\'font-size:2rem;\\'></i>'">`:'<i class="fas fa-capsules" style="font-size:2rem;"></i>'}</div><div style="font-weight:800;color:var(--td);font-size:0.9rem;">${x.name}</div>${x.description?`<div style="font-size:0.75rem;color:var(--tl);margin:4px 0;">📝 ${x.description}</div>`:''}<div style="font-size:0.75rem;color:var(--tl);">📂 ${x.category||'عام'}</div><div style="font-weight:900;color:var(--pd);margin:4px 0;">💰 ${x.price?.toFixed(2)} ج.م</div><div style="font-weight:700;color:#4b7485;">📦 ${x.quantity||0} قطعة</div><div style="display:flex;gap:4px;margin-top:6px;"><button onclick="openEditProductModal('${x.id}')" style="flex:1;font-size:0.75rem;">✏️ تعديل</button><button class="reject-btn" onclick="deleteProduct('${x.id}').then(()=>renderPharmacyProducts())" style="flex:1;font-size:0.75rem;">🗑️ حذف</button></div></div>`).join(''); }
+
+function openAddProductModal(){
+    const m=document.createElement('div'); m.className='modal'; m.style.display='flex';
+    m.innerHTML=`<div class="modal-content"><h3>➕ إضافة منتج جديد</h3>
+    <div class="input-group"><i class="fas fa-tag"></i><input type="text" id="productName" placeholder="اسم المنتج *"></div>
+    <div class="input-group"><i class="fas fa-align-right"></i><textarea id="productDescription" placeholder="وصف مختصر للمنتج (اختياري)..." rows="2" style="padding-right:35px;"></textarea></div>
+    <div class="input-group"><i class="fas fa-list"></i><select id="productCategory">${productCategories.map(c=>`<option>${c}</option>`).join('')}</select></div>
+    <div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="productPrice" placeholder="السعر بالجنية *" step="0.01" min="0.01"></div>
+    <div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="productQuantity" placeholder="الكمية المتاحة" value="1" min="0"></div>
+    <div class="input-group"><label style="display:block;margin-bottom:4px;font-weight:700;font-size:0.85rem;color:var(--td);">📸 صورة المنتج</label>
+    <input type="file" id="productImage" accept="image/*" style="display:block;margin-top:6px;padding:8px;border:2px dashed #d6e4ec;border-radius:12px;width:100%;"><div id="imagePreview" style="margin-top:8px;text-align:center;"></div></div>
+    <div class="modal-buttons"><button id="saveProductBtn" class="accept-btn">💾 حفظ المنتج</button><button class="reject-btn" onclick="this.closest('.modal').remove()">❌ إلغاء</button></div></div>`;
+    document.body.appendChild(m);
+    let selectedImageData=null;
+    document.getElementById('productImage').onchange=function(e){
+        const file=e.target.files[0]; if(!file) return;
+        if(file.size>2*1024*1024){ showMessage('حجم الصورة كبير جداً','error'); this.value=''; return; }
+        if(!file.type.startsWith('image/')){ showMessage('اختر ملف صورة صالح','error'); this.value=''; return; }
+        const reader=new FileReader();
+        reader.onload=function(ev){ selectedImageData=ev.target.result; document.getElementById('imagePreview').innerHTML=`<div style="border:2px solid #0ea882;border-radius:12px;padding:8px;display:inline-block;background:#f9fcfd;"><img src="${selectedImageData}" style="max-width:200px;max-height:150px;border-radius:8px;"><small style="color:#0ea882;display:block;margin-top:4px;font-weight:700;">✅ تم التحميل</small></div>`; };
+        reader.onerror=function(){ showMessage('فشل قراءة الصورة','error'); };
+        reader.readAsDataURL(file);
+    };
+    document.getElementById('saveProductBtn').onclick=async function(){
+        const name=document.getElementById('productName').value.trim();
+        const description=document.getElementById('productDescription').value.trim();
+        const price=parseFloat(document.getElementById('productPrice').value);
+        const quantity=parseInt(document.getElementById('productQuantity').value)||1;
+        const category=document.getElementById('productCategory').value;
+        if(!name){ showMessage('أدخل اسم المنتج','error'); return; }
+        if(!price||price<=0){ showMessage('أدخل سعر صحيح','error'); return; }
+        this.disabled=true; this.textContent='⏳ جاري الحفظ...';
+        try {
+            await saveProduct({ pharmacyId:currentUser.username, pharmacyName:currentUser.pharmacyName||currentUser.username, pharmacyPhone:currentUser.phone||'', name, description:description||'منتج طبي عالي الجودة', category, price, quantity, imageUrl:selectedImageData||null });
+            m.remove(); renderPharmacyProducts();
+        } catch(err) { showMessage('خطأ في الحفظ','error'); this.disabled=false; this.textContent='💾 حفظ المنتج'; }
+    };
+    m.addEventListener('click',function(e){ if(e.target===m) m.remove(); });
+}
+
+function openEditProductModal(pid){ db.ref(`products/${pid}`).once('value').then(s=>{ const p=s.val(); const m=document.createElement('div'); m.className='modal'; m.style.display='flex'; m.innerHTML=`<div class="modal-content"><h3>✏️ تعديل المنتج</h3><div class="input-group"><i class="fas fa-tag"></i><input type="text" id="editName" value="${p.name}"></div><div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="editPrice" value="${p.price}" step="0.01"></div><div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="editQuantity" value="${p.quantity}"></div><div class="modal-buttons"><button id="updateProductBtn" class="accept-btn">💾 تحديث</button><button class="reject-btn" onclick="this.closest('.modal').remove()">❌ إلغاء</button></div></div>`; document.body.appendChild(m); document.getElementById('updateProductBtn').onclick=async()=>{ await updateProduct(pid,{ name:document.getElementById('editName').value.trim(), price:parseFloat(document.getElementById('editPrice').value), quantity:parseInt(document.getElementById('editQuantity').value) }); m.remove(); renderPharmacyProducts(); }; m.addEventListener('click',e=>{ if(e.target===m) m.remove(); }); }); }
+
+async function renderDeliveryOrders(){
+    if(!currentUser||currentUser.type!=='delivery') return;
+    const availableOrders=await getAvailableOrders(currentUser);
+    const myOrders=await getMyDeliveries(currentUser.username);
+    document.getElementById('appContent').innerHTML=`<div class="container"><div class="dashboard-hero"><h2>🛵 طلبات التوصيل</h2><p>منطقتك: ${currentUser.city} - ${currentUser.center}</p></div><div class="section-title"><i class="fas fa-box-open"></i> طلبات متاحة للقبول</div><div id="availableOrdersList" class="orders-container"></div><div class="section-title"><i class="fas fa-hourglass-half"></i> جاري التوصيل</div><div id="myOrdersList" class="orders-container"></div></div>`; addFooter();
+    const ac=document.getElementById('availableOrdersList');
+    if(availableOrders.length===0) ac.innerHTML='<div class="empty-state"><i class="fas fa-box-open"></i><p>لا توجد طلبات متاحة</p></div>';
+    else ac.innerHTML=availableOrders.map(o=>{
+        let ph='', ti=0;
+        for(let pid in o.pharmacyOrders){ const p=o.pharmacyOrders[pid]; ti+=p.items.length; ph+=`<div class="pharmacy-stop"><div class="pharmacy-stop-icon"><i class="fas fa-store"></i></div><div><strong>${p.pharmacyName}</strong><br><span style="font-size:0.75rem;">📞 ${p.pharmacyPhone} | ${p.items.length} منتجات</span></div></div>`; }
+        return `<div class="order-card"><div class="order-header"><h4>#${o.id.slice(-6)}</h4><span class="order-status ready">📦 جاهز للشحن</span></div><div class="order-client"><div class="client-avatar"><i class="fas fa-user"></i></div><div class="client-info"><h4>${o.clientName}</h4><p>📞 ${o.clientPhone}</p></div></div><div class="order-address"><i class="fas fa-map-marker-alt"></i> ${o.clientAddress}</div><div class="pharmacies-list"><h5><i class="fas fa-store-alt"></i> صيدليات الشحن:</h5>${ph}</div><div style="margin:6px 0;display:flex;gap:5px;flex-wrap:wrap;"><span style="background:#0ea882;color:white;padding:4px 10px;border-radius:15px;font-size:0.75rem;"><i class="fas fa-box"></i> ${ti} منتجات</span><span style="background:#0ea882;color:white;padding:4px 10px;border-radius:15px;font-size:0.75rem;"><i class="fas fa-money-bill"></i> ${o.totalAmount?.toFixed(2)} ج.م</span></div><button class="accept-btn" style="width:100%;" onclick="claimOrder('${o.id}')"><i class="fas fa-check-circle"></i> قبول الطلب وتوصيله</button></div>`;
+    }).join('');
+    const mc=document.getElementById('myOrdersList');
+    if(myOrders.length===0) mc.innerHTML='<div class="empty-state"><i class="fas fa-hourglass-half"></i><p>لا توجد طلبات جاري توصيلها</p></div>';
+    else mc.innerHTML=myOrders.map(o=>{
+        let ph='';
+        for(let pid in o.pharmacyOrders){ const p=o.pharmacyOrders[pid]; ph+=`<div class="pharmacy-stop"><div class="pharmacy-stop-icon"><i class="fas fa-store"></i></div><div><strong>${p.pharmacyName}</strong><br><span style="font-size:0.75rem;">📞 ${p.pharmacyPhone}</span></div></div>`; }
+        return `<div class="order-card" style="border-right-color:#3b82f6;"><div class="order-header"><h4>#${o.id.slice(-6)}</h4><span class="order-status delivering">🛵 جاري التوصيل</span></div><div class="order-client"><div class="client-avatar"><i class="fas fa-user"></i></div><div class="client-info"><h4>${o.clientName}</h4><p>📞 ${o.clientPhone}</p></div></div><div class="order-address"><i class="fas fa-map-marker-alt"></i> ${o.clientAddress}</div><div class="pharmacies-list"><h5><i class="fas fa-store-alt"></i> الصيدليات:</h5>${ph}</div><div class="order-actions"><button class="call-btn" onclick="window.location.href='tel:${o.clientPhone}'"><i class="fas fa-phone"></i> اتصال</button><button class="accept-btn" onclick="markDelivered('${o.id}')"><i class="fas fa-check-circle"></i> تأكيد التوصيل</button></div></div>`;
+    }).join('');
+}
+
+async function renderProfile(){ const govOpts=Object.keys(defaultGovernorates).filter(g=>g!=='اختر المحافظة').map(g=>`<option value="${g}" ${currentUser.governorate===g?'selected':''}>${g}</option>`).join(''); document.getElementById('appContent').innerHTML=`<div class="container"><button class="back-button" onclick="goBack()"><i class="fas fa-arrow-right"></i> رجوع</button><div style="background:white;border-radius:20px;padding:1.2rem;"><div style="display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;"><div id="avatarClick" style="width:65px;height:65px;border-radius:50%;background:linear-gradient(145deg,#0ea882,#1cc9a0);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;">${currentUser.avatar?`<img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fas fa-user-circle" style="font-size:2.2rem;color:white;"></i>'}</div><div><h2 style="color:#0b2c37;font-size:1.1rem;">${currentUser.type==='pharmacy'?(currentUser.pharmacyName||currentUser.username):(currentUser.type==='delivery'?(currentUser.deliveryName||currentUser.username):(currentUser.fullName||currentUser.username))}</h2><p style="color:#6b8a99;font-size:0.8rem;">${currentUser.type==='client'?'مريض':(currentUser.type==='pharmacy'?'صيدلية':'مندوب توصيل')}</p></div></div><div class="input-group"><i class="fas fa-user"></i><input type="text" id="editUsername" value="${currentUser.username}"></div>${currentUser.type==='pharmacy'?`<div class="input-group"><i class="fas fa-store"></i><input type="text" id="editDisplayName" value="${currentUser.pharmacyName||''}" placeholder="اسم الصيدلية"></div>`:''}${currentUser.type==='delivery'?`<div class="input-group"><i class="fas fa-user"></i><input type="text" id="editDisplayName" value="${currentUser.deliveryName||''}" placeholder="اسم المندوب"></div>`:''}${currentUser.type==='client'?`<div class="input-group"><i class="fas fa-user"></i><input type="text" id="editDisplayName" value="${currentUser.fullName||''}" placeholder="الاسم الكامل"></div>`:''}<div class="input-group"><i class="fas fa-lock"></i><input type="password" id="editPassword" placeholder="كلمة سر جديدة"></div><div class="input-group"><i class="fas fa-map-marker-alt"></i><input type="text" id="editAddress" value="${currentUser.address||''}" placeholder="العنوان"></div><div class="input-group"><i class="fas fa-phone"></i><input type="tel" id="editPhone" value="${currentUser.phone||''}" placeholder="رقم الهاتف"></div><div class="location-group"><label>المحافظة</label><select id="editGovernorate" class="location-select"><option value="">اختر</option>${govOpts}</select></div><div class="location-group"><label>المركز</label><select id="editCenter" class="location-select" disabled><option>اختر المحافظة</option></select></div><div class="location-group"><label>المدينة/القرية</label><select id="editCity" class="location-select" disabled><option>اختر المركز</option></select></div><div id="newCityContainerEdit" style="display:none;" class="input-group"><i class="fas fa-plus-circle"></i><input type="text" id="newCityInputEdit" placeholder="اسم المدينة/القرية الجديدة"></div><div style="display:flex;gap:6px;margin-top:12px;"><button id="saveProfileBtn" style="flex:1;"><i class="fas fa-save"></i> حفظ</button><button id="deleteAccountBtn" class="reject-btn" style="flex:1;"><i class="fas fa-trash"></i> حذف</button></div></div></div>`; addFooter(); if(currentUser.governorate){ updateCenterOptions('editGovernorate','editCenter',currentUser.center); if(currentUser.center) updateCityOptions('editGovernorate','editCenter','editCity','newCityContainerEdit',currentUser.city); } document.getElementById('editGovernorate').addEventListener('change',function(){ updateCenterOptions('editGovernorate','editCenter'); document.getElementById('editCity').innerHTML='<option>اختر المركز أولاً</option>'; document.getElementById('editCity').disabled=true; document.getElementById('newCityContainerEdit').style.display='none'; }); document.getElementById('editCenter').addEventListener('change',async function(){ await updateCityOptions('editGovernorate','editCenter','editCity','newCityContainerEdit'); }); document.getElementById('editCity').addEventListener('change',function(){ document.getElementById('newCityContainerEdit').style.display=this.value==='__other__'?'block':'none'; }); document.getElementById('avatarClick').onclick=openAvatarModal; document.getElementById('saveProfileBtn').onclick=async()=>{ const nu=document.getElementById('editUsername').value.trim(), np=document.getElementById('editPassword').value; const na=document.getElementById('editAddress').value, nph=document.getElementById('editPhone').value; const ng=document.getElementById('editGovernorate').value, nc=document.getElementById('editCenter').value; let nci=document.getElementById('editCity').value; if(!nu||!ng||!nc){ showMessage('جميع الحقول الأساسية مطلوبة','error'); return; } if(nci==='__other__'){ const ncn=document.getElementById('newCityInputEdit').value.trim(); if(!ncn){ showMessage('أدخل اسم المدينة','error'); return; } await saveNewCity(ng,nc,ncn); nci=ncn; } if(nu!==currentUser.username){ const check=await getUserData(nu); if(check){ showMessage('اسم المستخدم موجود','error'); return; } await db.ref('users/'+nu).set({...currentUser,username:nu}); await db.ref('users/'+currentUser.username).remove(); currentUser.username=nu; } const u={ address:na, phone:nph, governorate:ng, center:nc, city:nci }; if(np) u.password=np; const dn=document.getElementById('editDisplayName')?.value.trim(); if(currentUser.type==='pharmacy') u.pharmacyName=dn; else if(currentUser.type==='delivery') u.deliveryName=dn; else u.fullName=dn; await updateProfile(u); renderProfile(); }; document.getElementById('deleteAccountBtn').onclick=()=>{ if(confirm('هل أنت متأكد؟')){ db.ref('users/'+currentUser.username).remove().then(()=>logout()); } }; }
+function openAvatarModal(){ const m=document.createElement('div'); m.className='modal'; m.style.display='flex'; m.innerHTML=`<div class="modal-content"><h3>تغيير الصورة</h3><div id="previewContainer" style="width:90px;height:90px;border-radius:50%;margin:0 auto;border:3px solid #0ea882;display:flex;align-items:center;justify-content:center;overflow:hidden;">${currentUser.avatar?`<img src="${currentUser.avatar}" style="width:100%;height:100%;object-fit:cover;">`:'<i class="fas fa-user-circle" style="font-size:3rem;color:#95a5a6;"></i>'}</div><label style="display:block;text-align:center;margin:10px 0;padding:8px;background:#0ea882;color:white;border-radius:20px;cursor:pointer;font-weight:700;font-size:0.85rem;"><i class="fas fa-cloud-upload-alt"></i> اختر صورة<input type="file" id="avatarFile" accept="image/*" style="display:none;"></label><div class="modal-buttons"><button id="saveAvatarBtn" class="accept-btn">حفظ</button><button class="reject-btn" onclick="this.closest('.modal').remove()">إلغاء</button></div></div>`; document.body.appendChild(m); let si=null; document.getElementById('avatarFile').onchange=e=>{ const f=e.target.files[0]; if(f&&f.size<2*1024*1024){ const r=new FileReader(); r.onload=ev=>{ si=ev.target.result; document.getElementById('previewContainer').innerHTML=`<img src="${si}" style="width:100%;height:100%;object-fit:cover;">`; }; r.readAsDataURL(f); } }; document.getElementById('saveAvatarBtn').onclick=async()=>{ if(si){ await updateProfile({ avatar:si }); m.remove(); renderProfile(); }else showMessage('اختر صورة','error'); }; m.addEventListener('click',e=>{ if(e.target===m) m.remove(); }); }
+
+// ✅✅✅ دالة الفوتر المحسّنة ✅✅✅
+function addFooter(){ 
+    // إزالة أي فوتر قديم أولاً
+    const existingFooter = document.querySelector('.footer-bar');
+    if(existingFooter) existingFooter.remove();
+    
+    // إنشاء الفوتر الجديد
+    const footer = document.createElement('footer');
+    footer.className = 'footer-bar';
+    footer.innerHTML = `
+        <i class="fas fa-truck-medical"></i>
+        <span>© 2026 <span class="brand-name">صيدليتي</span> - جميع الحقوق محفوظة</span>
+        <i class="fas fa-heart" style="color:#e63946;font-size:0.8rem;"></i>
+    `;
+    
+    // إضافته داخل حاوية المحتوى الرئيسي
+    const appContent = document.getElementById('appContent');
+    if(appContent) {
+        appContent.appendChild(footer);
+    }
+}
+function goBack(){ renderPage(); }
+
+window.goToHome=()=>{ renderPage(); closeSidebar(); };
+window.addToCart=addToCart; window.removeFromCart=removeFromCart; window.updateCartItemQuantity=updateCartItemQuantity;
+window.renderCart=renderCart; window.renderOrders=renderOrders; window.renderPharmacyProducts=renderPharmacyProducts;
+window.pharmacyAcceptOrder=pharmacyAcceptOrder; window.pharmacyPrepareOrder=pharmacyPrepareOrder; window.openRejectModal=openRejectModal;
+window.deleteProduct=deleteProduct; window.openAddProductModal=openAddProductModal; window.openEditProductModal=openEditProductModal;
+window.claimOrder=claimOrder; window.markDelivered=markDelivered; window.openCheckoutModal=openCheckoutModal;
+window.goBack=goBack;
+
+(async function(){
+    await initLocationsData();
+    document.getElementById('menuBtn').onclick=openSidebar;
+    document.getElementById('closeSidebar').onclick=closeSidebar;
+    document.getElementById('overlay').onclick=closeSidebar;
+    document.getElementById('sideHome').onclick=e=>{ e.preventDefault(); closeSidebar(); renderPage(); };
+    document.getElementById('sideCart').onclick=e=>{ e.preventDefault(); closeSidebar(); renderCart(); };
+    document.getElementById('sideOrders').onclick=e=>{ e.preventDefault(); closeSidebar(); renderOrders(); };
+    document.getElementById('sideProducts').onclick=e=>{ e.preventDefault(); closeSidebar(); renderPharmacyProducts(); };
+    document.getElementById('sideProfile').onclick=e=>{ e.preventDefault(); closeSidebar(); renderProfile(); };
+    document.getElementById('sideLogout').onclick=e=>{ e.preventDefault(); closeSidebar(); logout(); };
+    await cleanupOldOrders();
+    showAuthScreen();
+    requestNotificationPermission();
+    listenForNewOrders();
+})();
+</script>
+</body>
+</html>
