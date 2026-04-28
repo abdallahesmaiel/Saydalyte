@@ -89,8 +89,31 @@
         .cards-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 1rem; }
         .product-card { background: #fff; border-radius: 18px; padding: 0; box-shadow: var(--shadow-sm); border-right: 4px solid var(--p); transition: all 0.3s; display: flex !important; flex-direction: row !important; overflow: hidden; min-height: 150px; }
         .product-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); border-right-color: var(--pl); }
-        .product-card .product-image { width: 155px !important; min-width: 155px !important; height: auto !important; min-height: 150px; background: linear-gradient(135deg, #f8fcfd, #f0f7fa); display: flex; align-items: center; justify-content: center; overflow: hidden; border-left: 1px solid #e8f0f4; flex-shrink: 0; }
-        .product-card .product-image img { width: 100% !important; height: 100% !important; object-fit: cover !important; display: block; }
+        
+        /* 🆕 تعديل مكان الصورة في كارت المنتج - المتجر */
+        .product-card .product-image {
+            width: 155px !important;
+            min-width: 155px !important;
+            height: auto !important;
+            min-height: 150px;
+            background: linear-gradient(135deg, #f8fcfd, #f0f7fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-left: 1px solid #e8f0f4;
+            flex-shrink: 0;
+            padding: 10px;
+        }
+        .product-card .product-image img {
+            max-width: 100% !important;
+            max-height: 130px !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            display: block;
+            border-radius: 8px;
+        }
         .product-card .product-image i { font-size: 3.8rem; color: #b8ccd9; transition: transform 0.3s; }
         .product-card:hover .product-image i { transform: scale(1.1); }
         .product-card .product-info { flex: 1; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
@@ -108,21 +131,82 @@
         .product-card .add-to-cart-btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
         .product-card .add-to-cart-btn:disabled { opacity: 0.5; cursor: not-allowed; background: #95a5a6; box-shadow: none; }
         
+        /* 🆕 تعديل صورة منتجات الصيدلية */
         .pharmacy-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem; }
         .pharmacy-product-card { background: #fff; border-radius: 22px; padding: 1rem; box-shadow: var(--shadow-sm); border-top: 4px solid var(--p); transition: all 0.3s; display: flex; flex-direction: column; }
         .pharmacy-product-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-        .pharmacy-product-card .pharmacy-product-image { width: 100%; height: 120px; border-radius: 16px; overflow: hidden; margin-bottom: 8px; background: #f5f9fc; display: flex; align-items: center; justify-content: center; }
-        .pharmacy-product-card .pharmacy-product-image img { width: 100%; height: 100%; object-fit: cover; }
+        .pharmacy-product-card .pharmacy-product-image {
+            width: 100%;
+            height: 140px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #f8fcfd, #f0f7fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .pharmacy-product-card .pharmacy-product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            border-radius: 8px;
+        }
         .pharmacy-product-card .pharmacy-product-image i { font-size: 2.5rem; color: #b0c4d9; }
+        
+        /* 🆕 تعديل صورة سلة التسوق */
+        .cart-item-image {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f5f9fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            padding: 4px;
+        }
+        .cart-item-image img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            border-radius: 6px;
+        }
+        .cart-item-image i { font-size: 1.4rem; color: #b0c4d9; }
+        
+        /* 🆕 تعديل صورة مودال المنتجات الذكية */
+        .smart-product-item .smart-product-image-container {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f5f9fc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            padding: 3px;
+        }
+        .smart-product-item .smart-product-image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            border-radius: 6px;
+        }
         
         .cart-container { background: #fff; border-radius: 22px; padding: 1.2rem; margin-top: 1rem; box-shadow: var(--shadow-sm); }
         .cart-pharmacy-group { margin-bottom: 16px; padding: 12px; background: #f9fcfd; border-radius: 16px; border: 1px solid #e8f0f4; }
         .cart-pharmacy-group h4 { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: var(--td); font-size: 0.95rem; padding-bottom: 8px; border-bottom: 2px solid var(--pl); }
         .cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px dashed #e0ecf2; }
         .cart-item:last-child { border-bottom: none; }
-        .cart-item-image { width: 52px; height: 52px; border-radius: 12px; overflow: hidden; background: #f5f9fc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .cart-item-image img { width: 100%; height: 100%; object-fit: cover; }
-        .cart-item-image i { font-size: 1.4rem; color: #b0c4d9; }
         .cart-item-info { flex: 1; min-width: 0; }
         .cart-item-name { font-weight: 800; color: var(--td); font-size: 0.9rem; }
         .cart-item-price { font-weight: 800; color: var(--pd); font-size: 0.95rem; }
@@ -222,44 +306,11 @@
         .search-shell, .select-shell { background: #fff; border-radius: 14px; padding: 0.4rem 0.8rem; display: flex; align-items: center; gap: 0.6rem; border: 1px solid #e0ecf2; min-height: 48px; position: relative; }
         .search-shell i, .select-shell i { color: var(--p); font-size: 0.95rem; }
         .search-shell input, .select-shell select { width: 100%; border: none; outline: none; background: transparent; font-weight: 600; font-size: 0.82rem; }
-        .client-barcode-icon {
-            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-            color: var(--p); font-size: 1.2rem; cursor: pointer;
-            z-index: 2; transition: all 0.2s; padding: 6px;
-            border-radius: 50%; background: rgba(14,168,130,0.08);
-        }
-        .client-barcode-icon:hover {
-            transform: translateY(-50%) scale(1.15);
-            color: var(--pl);
-            background: rgba(14,168,130,0.15);
-        }
-        
-        .barcode-search-notification {
-            background: linear-gradient(135deg, #f0faf6, #e8f5e9);
-            border: 2px solid var(--p);
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            color: var(--pd);
-            animation: fadeIn 0.3s ease-out;
-        }
+        .client-barcode-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--p); font-size: 1.2rem; cursor: pointer; z-index: 2; transition: all 0.2s; padding: 6px; border-radius: 50%; background: rgba(14,168,130,0.08); }
+        .client-barcode-icon:hover { transform: translateY(-50%) scale(1.15); color: var(--pl); background: rgba(14,168,130,0.15); }
+        .barcode-search-notification { background: linear-gradient(135deg, #f0faf6, #e8f5e9); border: 2px solid var(--p); border-radius: 14px; padding: 12px 16px; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--pd); animation: fadeIn 0.3s ease-out; }
         .barcode-search-notification i { color: var(--p); font-size: 1.3rem; }
-        .barcode-search-notification .clear-barcode-btn {
-            margin-right: auto;
-            background: rgba(14,168,130,0.15);
-            border: none;
-            color: var(--pd);
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-        }
+        .barcode-search-notification .clear-barcode-btn { margin-right: auto; background: rgba(14,168,130,0.15); border: none; color: var(--pd); padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.8rem; transition: all 0.2s; }
         .barcode-search-notification .clear-barcode-btn:hover { background: rgba(14,168,130,0.25); }
         
         .delivery-info { background: #eef6fa; padding: 10px 12px; border-radius: 12px; margin: 8px 0; font-size: 0.88rem; display: flex; align-items: center; gap: 10px; }
@@ -279,50 +330,11 @@
         .smart-product-item:hover { background: #f0faf6 !important; }
         .smart-product-item.selected { background: #e8f5e9 !important; border-right: 4px solid var(--p); }
 
-        /* 🆕 أنماط طباعة الريسيت */
         @media print {
             body * { visibility: hidden; }
             #printArea, #printArea * { visibility: visible; }
             #printArea { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white !important; }
             .no-print { display: none !important; }
-        }
-        .receipt-print-area {
-            background: white;
-            padding: 20px;
-            max-width: 400px;
-            margin: 0 auto;
-            font-size: 14px;
-            border: 2px dashed #ccc;
-            border-radius: 12px;
-        }
-        .receipt-print-area .receipt-header {
-            text-align: center;
-            border-bottom: 2px dashed #0ea882;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-        }
-        .receipt-print-area .receipt-header h3 {
-            color: #0b2c37;
-            font-size: 1.2rem;
-            font-weight: 900;
-            margin-bottom: 4px;
-        }
-        .receipt-print-area .receipt-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px dotted #e0e8ef;
-            font-size: 0.85rem;
-        }
-        .receipt-print-area .receipt-total {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            font-weight: 900;
-            font-size: 1.1rem;
-            border-top: 2px solid #0ea882;
-            margin-top: 8px;
-            color: #08755c;
         }
         
         @media (max-width: 768px) {
@@ -339,7 +351,8 @@
             .stats-grid { grid-template-columns: 1fr; }
             .cart-item { flex-wrap: wrap; }
             .cart-item-controls { width: 100%; justify-content: center; margin-top: 8px; }
-            .product-card .product-image { width: 120px !important; min-width: 120px !important; }
+            .product-card .product-image { width: 110px !important; min-width: 110px !important; padding: 8px; }
+            .product-card .product-image img { max-height: 100px !important; }
         }
     </style>
 </head>
@@ -459,107 +472,13 @@ async function printOrderReceipt(oid) {
     const snap = await db.ref(`orders/${oid}`).once('value');
     const order = snap.val();
     if (!order) { showMessage('الطلب غير موجود', 'error'); return; }
-    
     const pharmacyData = order.pharmacyOrders?.[currentUser.username];
     if (!pharmacyData) { showMessage('بيانات الصيدلية غير متوفرة', 'error'); return; }
-    
     const now = new Date();
     const dateStr = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
     const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-    
     const printWindow = window.open('', '_blank', 'width=400,height=600');
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html dir="rtl">
-        <head>
-            <meta charset="UTF-8">
-            <title>فاتورة طلب #${oid.slice(-6)}</title>
-            <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-            <style>
-                * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-                body { padding: 15px; font-size: 13px; color: #0b2c37; }
-                .receipt {
-                    max-width: 380px;
-                    margin: 0 auto;
-                    border: 1px solid #e0e8ef;
-                    border-radius: 12px;
-                    padding: 15px;
-                }
-                .receipt-header {
-                    text-align: center;
-                    border-bottom: 2px dashed #0ea882;
-                    padding-bottom: 12px;
-                    margin-bottom: 12px;
-                }
-                .receipt-header h2 { color: #0ea882; font-size: 1.3rem; font-weight: 900; }
-                .receipt-header .pharmacy-name { color: #0b2c37; font-size: 1rem; font-weight: 700; }
-                .receipt-header .order-id { background: #f0faf6; color: #08755c; padding: 4px 12px; border-radius: 15px; display: inline-block; margin-top: 6px; font-weight: 800; font-size: 0.85rem; }
-                .info-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.8rem; color: #4b7485; }
-                .info-row strong { color: #0b2c37; }
-                .divider { border-top: 1px dashed #dce6ee; margin: 8px 0; }
-                .item-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dotted #e8f0f4; font-size: 0.82rem; }
-                .item-name { flex: 1; font-weight: 600; }
-                .item-qty { background: #f0f6fa; padding: 2px 8px; border-radius: 10px; font-weight: 700; font-size: 0.75rem; margin: 0 6px; }
-                .item-price { font-weight: 800; color: #08755c; white-space: nowrap; }
-                .total-row { display: flex; justify-content: space-between; padding: 10px 0; font-weight: 900; font-size: 1.1rem; color: #08755c; border-top: 2px solid #0ea882; margin-top: 8px; }
-                .footer-note { text-align: center; margin-top: 12px; font-size: 0.75rem; color: #95a5a6; }
-                .barcode-section { text-align: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #dce6ee; }
-                .barcode-section .barcode-text { font-family: monospace; font-size: 1rem; letter-spacing: 2px; color: #0b2c37; }
-                @media print { body { padding: 0; } .receipt { border: none; border-radius: 0; max-width: 100%; } .no-print { display: none; } }
-            </style>
-        </head>
-        <body>
-            <div class="receipt">
-                <div class="receipt-header">
-                    <h2>🧪 صيدليتي</h2>
-                    <div class="pharmacy-name">${currentUser.pharmacyName || currentUser.username}</div>
-                    <div class="order-id">📋 طلب #${oid.slice(-6)}</div>
-                </div>
-                
-                <div class="info-row"><span>📅 التاريخ:</span><strong>${dateStr}</strong></div>
-                <div class="info-row"><span>🕐 الوقت:</span><strong>${timeStr}</strong></div>
-                <div class="info-row"><span>👤 المريض:</span><strong>${order.clientName || 'غير محدد'}</strong></div>
-                <div class="info-row"><span>📞 هاتف:</span><strong>${order.clientPhone || 'غير محدد'}</strong></div>
-                <div class="info-row"><span>📍 العنوان:</span><strong>${order.clientAddress || 'غير محدد'}</strong></div>
-                ${order.deliveryAgentName ? `<div class="info-row"><span>🛵 المندوب:</span><strong>${order.deliveryAgentName}</strong></div>` : ''}
-                
-                <div class="divider"></div>
-                <div style="font-weight:800;font-size:0.85rem;margin-bottom:4px;">📦 محتويات الطلب:</div>
-                ${pharmacyData.items.map(i => `
-                    <div class="item-row">
-                        <span class="item-name">${i.name}</span>
-                        <span class="item-qty">x${i.quantity}</span>
-                        <span class="item-price">${(i.price * i.quantity).toFixed(2)} ج.م</span>
-                    </div>
-                `).join('')}
-                
-                <div class="total-row">
-                    <span>💰 الإجمالي:</span>
-                    <span>${pharmacyData.subtotal?.toFixed(2)} ج.م</span>
-                </div>
-                
-                <div class="barcode-section">
-                    <div class="barcode-text">*${oid.slice(-6)}*</div>
-                    <div style="font-size:0.7rem;color:#95a5a6;">باركود الطلب</div>
-                </div>
-                
-                <div class="footer-note">
-                    🧡 شكراً لثقتكم بـ <strong>صيدليتي</strong><br>
-                    ${currentUser.phone ? `📞 ${currentUser.phone}` : ''}
-                </div>
-                
-                <div class="no-print" style="text-align:center;margin-top:15px;">
-                    <button onclick="window.print()" style="background:#0ea882;color:white;border:none;padding:10px 25px;border-radius:25px;font-weight:700;cursor:pointer;font-size:0.9rem;">
-                        <i class="fas fa-print"></i> طباعة
-                    </button>
-                    <button onclick="window.close()" style="background:#95a5a6;color:white;border:none;padding:10px 25px;border-radius:25px;font-weight:700;cursor:pointer;font-size:0.9rem;margin-right:8px;">
-                        <i class="fas fa-times"></i> إغلاق
-                    </button>
-                </div>
-            </div>
-        </body>
-        </html>
-    `);
+    printWindow.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>فاتورة طلب #${oid.slice(-6)}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"><style>* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; } body { padding: 15px; font-size: 13px; color: #0b2c37; } .receipt { max-width: 380px; margin: 0 auto; border: 1px solid #e0e8ef; border-radius: 12px; padding: 15px; } .receipt-header { text-align: center; border-bottom: 2px dashed #0ea882; padding-bottom: 12px; margin-bottom: 12px; } .receipt-header h2 { color: #0ea882; font-size: 1.3rem; font-weight: 900; } .receipt-header .pharmacy-name { color: #0b2c37; font-size: 1rem; font-weight: 700; } .receipt-header .order-id { background: #f0faf6; color: #08755c; padding: 4px 12px; border-radius: 15px; display: inline-block; margin-top: 6px; font-weight: 800; font-size: 0.85rem; } .info-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.8rem; color: #4b7485; } .info-row strong { color: #0b2c37; } .divider { border-top: 1px dashed #dce6ee; margin: 8px 0; } .item-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dotted #e8f0f4; font-size: 0.82rem; } .item-name { flex: 1; font-weight: 600; } .item-qty { background: #f0f6fa; padding: 2px 8px; border-radius: 10px; font-weight: 700; font-size: 0.75rem; margin: 0 6px; } .item-price { font-weight: 800; color: #08755c; white-space: nowrap; } .total-row { display: flex; justify-content: space-between; padding: 10px 0; font-weight: 900; font-size: 1.1rem; color: #08755c; border-top: 2px solid #0ea882; margin-top: 8px; } .footer-note { text-align: center; margin-top: 12px; font-size: 0.75rem; color: #95a5a6; } .barcode-section { text-align: center; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #dce6ee; } .barcode-section .barcode-text { font-family: monospace; font-size: 1rem; letter-spacing: 2px; color: #0b2c37; } @media print { body { padding: 0; } .receipt { border: none; border-radius: 0; max-width: 100%; } .no-print { display: none; } }</style></head><body><div class="receipt"><div class="receipt-header"><h2>🧪 صيدليتي</h2><div class="pharmacy-name">${currentUser.pharmacyName || currentUser.username}</div><div class="order-id">📋 طلب #${oid.slice(-6)}</div></div><div class="info-row"><span>📅 التاريخ:</span><strong>${dateStr}</strong></div><div class="info-row"><span>🕐 الوقت:</span><strong>${timeStr}</strong></div><div class="info-row"><span>👤 المريض:</span><strong>${order.clientName || 'غير محدد'}</strong></div><div class="info-row"><span>📞 هاتف:</span><strong>${order.clientPhone || 'غير محدد'}</strong></div><div class="info-row"><span>📍 العنوان:</span><strong>${order.clientAddress || 'غير محدد'}</strong></div>${order.deliveryAgentName ? `<div class="info-row"><span>🛵 المندوب:</span><strong>${order.deliveryAgentName}</strong></div>` : ''}<div class="divider"></div><div style="font-weight:800;font-size:0.85rem;margin-bottom:4px;">📦 محتويات الطلب:</div>${pharmacyData.items.map(i => `<div class="item-row"><span class="item-name">${i.name}</span><span class="item-qty">x${i.quantity}</span><span class="item-price">${(i.price * i.quantity).toFixed(2)} ج.م</span></div>`).join('')}<div class="total-row"><span>💰 الإجمالي:</span><span>${pharmacyData.subtotal?.toFixed(2)} ج.م</span></div><div class="barcode-section"><div class="barcode-text">*${oid.slice(-6)}*</div><div style="font-size:0.7rem;color:#95a5a6;">باركود الطلب</div></div><div class="footer-note">🧡 شكراً لثقتكم بـ <strong>صيدليتي</strong><br>${currentUser.phone ? `📞 ${currentUser.phone}` : ''}</div><div class="no-print" style="text-align:center;margin-top:15px;"><button onclick="window.print()" style="background:#0ea882;color:white;border:none;padding:10px 25px;border-radius:25px;font-weight:700;cursor:pointer;font-size:0.9rem;"><i class="fas fa-print"></i> طباعة</button><button onclick="window.close()" style="background:#95a5a6;color:white;border:none;padding:10px 25px;border-radius:25px;font-weight:700;cursor:pointer;font-size:0.9rem;margin-right:8px;"><i class="fas fa-times"></i> إغلاق</button></div></div></body></html>`);
     printWindow.document.close();
 }
 
@@ -588,7 +507,29 @@ function renderPage(){ if(!currentUser) showAuthScreen(); else if(currentUser.ty
 
 // ============ CLIENT STORE ============
 async function renderClientStore() { const products = await getAllProducts(); window.currentStoreProducts = products; const cats = [...new Set(products.map(p => p.category).filter(Boolean))]; document.getElementById('appContent').innerHTML = `<div class="container"><div class="dashboard-hero"><h2>🛒 متجر صيدليتي</h2><p>تسوق الأدوية والمستلزمات الطبية بأفضل الأسعار</p></div><div class="toolbar"><div class="search-shell"><i class="fas fa-search"></i><input type="text" id="searchProducts" placeholder="ابحث عن منتج أو باركود..."><i class="fas fa-qrcode client-barcode-icon" id="clientBarcodeBtn" onclick="openClientQRScanner()" title="مسح باركود للبحث عن منتج"></i></div><div class="select-shell"><i class="fas fa-tags"></i><select id="categoryFilter"><option value="all">كل الفئات</option>${cats.map(c => `<option>${c}</option>`).join('')}</select></div><div class="select-shell"><i class="fas fa-sort"></i><select id="sortProducts"><option value="name">الاسم</option><option value="price_asc">السعر من الأقل</option><option value="price_desc">السعر من الأعلى</option></select></div></div><div id="barcodeNotification" style="display:none;"></div><div id="productsGrid" class="cards-grid"></div></div>`; addFooter(); const apply = () => { const q = normalizeArabicText(document.getElementById('searchProducts')?.value || ''); const cat = document.getElementById('categoryFilter')?.value || 'all'; const sort = document.getElementById('sortProducts')?.value || 'name'; let f = products; if (window.currentBarcodeFilter) { f = f.filter(p => p.barcode === window.currentBarcodeFilter || p.barcode === parseInt(window.currentBarcodeFilter)); } else if (q) { f = f.filter(p => normalizeArabicText(p.name).includes(q) || (p.barcode && p.barcode.toString().includes(q))); } if (cat !== 'all') { f = f.filter(p => p.category === cat); } f.sort((a, b) => sort === 'price_asc' ? a.price - b.price : sort === 'price_desc' ? b.price - a.price : (a.name || '').localeCompare(b.name || '', 'ar')); displayProducts(f); }; ['searchProducts', 'categoryFilter', 'sortProducts'].forEach(id => { const el = document.getElementById(id); if (el) { el.addEventListener('input', apply); el.addEventListener('change', apply); } }); if (window.currentBarcodeFilter) { showBarcodeNotification(window.currentBarcodeFilter); } apply(); }
-function displayProducts(products, targetId = 'productsGrid') { const grid = document.getElementById(targetId); if (!grid) return; if (products.length === 0) { const msg = window.currentBarcodeFilter ? `لا توجد منتجات بالباركود: <strong>${window.currentBarcodeFilter}</strong>` : 'لا توجد منتجات متطابقة'; grid.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>${msg}</h3>${window.currentBarcodeFilter ? '<button onclick="clearBarcodeSearch()" style="margin-top:10px;"><i class="fas fa-arrow-right"></i> عرض كل المنتجات</button>' : ''}</div>`; return; } grid.innerHTML = products.map(p => { const inCart = currentCart.items[p.id]; const sc = p.quantity > 10 ? 'in' : p.quantity > 0 ? 'low' : 'out'; const st = p.quantity > 10 ? 'متوفر' : p.quantity > 0 ? 'قليل' : 'نفذ'; const desc = p.description || 'منتج طبي عالي الجودة'; const imgHtml = p.imageUrl ? `<img src="${p.imageUrl}" alt="${p.name}" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fas fa-capsules\\' style=\\'font-size:3.8rem;color:#b8ccd9;\\'></i>'">` : '<i class="fas fa-capsules" style="font-size:3.8rem;color:#b8ccd9;"></i>'; return `<div class="product-card"><div class="product-image">${imgHtml}</div><div class="product-info"><div class="product-details"><h3 class="product-name">${p.name}</h3><div class="product-description">📝 ${desc}</div><span class="product-category-badge"><i class="fas fa-tag"></i> ${p.category || 'عام'}</span>${p.barcode ? `<div style="font-size:0.7rem;color:var(--tl);">🏷️ ${p.barcode}</div>` : ''}</div><div class="product-footer"><span class="product-price">💰 ${p.price?.toFixed(2)} ج.م</span><span class="product-stock ${sc}">${st}</span><button class="add-to-cart-btn" onclick="addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')})" ${p.quantity <= 0 ? 'disabled' : ''}><i class="fas fa-cart-plus"></i> ${inCart ? `بالسلة (${inCart.quantity})` : 'أضف للسلة'}</button></div></div></div>`; }).join(''); }
+
+// 🆕 دالة عرض المنتجات مع تنسيق الصورة الجديد
+function displayProducts(products, targetId = 'productsGrid') {
+    const grid = document.getElementById(targetId);
+    if (!grid) return;
+    if (products.length === 0) {
+        const msg = window.currentBarcodeFilter ? `لا توجد منتجات بالباركود: <strong>${window.currentBarcodeFilter}</strong>` : 'لا توجد منتجات متطابقة';
+        grid.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>${msg}</h3>${window.currentBarcodeFilter ? '<button onclick="clearBarcodeSearch()" style="margin-top:10px;"><i class="fas fa-arrow-right"></i> عرض كل المنتجات</button>' : ''}</div>`;
+        return;
+    }
+    grid.innerHTML = products.map(p => {
+        const inCart = currentCart.items[p.id];
+        const sc = p.quantity > 10 ? 'in' : p.quantity > 0 ? 'low' : 'out';
+        const st = p.quantity > 10 ? 'متوفر' : p.quantity > 0 ? 'قليل' : 'نفذ';
+        const desc = p.description || 'منتج طبي عالي الجودة';
+        // 🆕 تنسيق الصورة مع object-fit: contain
+        const imgHtml = p.imageUrl ? 
+            `<img src="${p.imageUrl}" alt="${p.name}" style="max-width:100%;max-height:130px;width:auto;height:auto;object-fit:contain;display:block;border-radius:8px;" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\\'fas fa-capsules\\' style=\\'font-size:3.8rem;color:#b8ccd9;\\'></i>'">` : 
+            '<i class="fas fa-capsules" style="font-size:3.8rem;color:#b8ccd9;"></i>';
+        return `<div class="product-card"><div class="product-image">${imgHtml}</div><div class="product-info"><div class="product-details"><h3 class="product-name">${p.name}</h3><div class="product-description">📝 ${desc}</div><span class="product-category-badge"><i class="fas fa-tag"></i> ${p.category || 'عام'}</span>${p.barcode ? `<div style="font-size:0.7rem;color:var(--tl);">🏷️ ${p.barcode}</div>` : ''}</div><div class="product-footer"><span class="product-price">💰 ${p.price?.toFixed(2)} ج.م</span><span class="product-stock ${sc}">${st}</span><button class="add-to-cart-btn" onclick="addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')})" ${p.quantity <= 0 ? 'disabled' : ''}><i class="fas fa-cart-plus"></i> ${inCart ? `بالسلة (${inCart.quantity})` : 'أضف للسلة'}</button></div></div></div>`;
+    }).join('');
+}
+
 function showBarcodeNotification(barcode) { const notif = document.getElementById('barcodeNotification'); if (!notif) return; notif.style.display = 'block'; notif.innerHTML = `<div class="barcode-search-notification"><i class="fas fa-qrcode"></i><span>نتائج البحث بالباركود: <strong>${barcode}</strong></span><button class="clear-barcode-btn" onclick="clearBarcodeSearch()"><i class="fas fa-times"></i> إلغاء</button></div>`; }
 
 // ============ CLIENT QR SCANNER ============
@@ -602,7 +543,7 @@ async function searchProductForClient(barcode) { const allProducts = window.curr
 function clearBarcodeSearch() { window.currentBarcodeFilter = null; const notif = document.getElementById('barcodeNotification'); if (notif) notif.style.display = 'none'; const searchInput = document.getElementById('searchProducts'); if (searchInput) { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); } }
 
 // ============ RENDER: CART ============
-function renderCart(){ if(!currentUser||currentUser.type!=='client'){ renderPage(); return; } const items=Object.values(currentCart.items), subtotal=items.reduce((s,i)=>s+(i.price||0)*(i.quantity||0),0); let html=`<div class="container"><button class="back-button" onclick="goBack()"><i class="fas fa-arrow-right"></i> رجوع</button><div class="dashboard-hero"><h2><i class="fas fa-shopping-cart"></i> سلة التسوق</h2></div><div class="cart-container">`; if(items.length===0){ html+='<div class="empty-state"><i class="fas fa-shopping-cart"></i><h3>السلة فارغة</h3><button onclick="renderClientStore()">تصفح المتجر</button></div>'; }else{ const groups={}; items.forEach(i=>{ const pid=i.pharmacyId||'unknown'; if(!groups[pid]) groups[pid]={ name:i.pharmacyName||'صيدلية', items:[] }; groups[pid].items.push(i); }); for(let pid in groups){ html+=`<div class="cart-pharmacy-group"><h4><i class="fas fa-store-alt"></i> ${groups[pid].name}</h4>`; groups[pid].items.forEach(item=>{ html+=`<div class="cart-item"><div class="cart-item-image">${item.imageUrl?`<img src="${item.imageUrl}" alt="${item.name}" onerror="this.innerHTML='<i class=\\'fas fa-capsules\\'></i>'">`:'<i class="fas fa-capsules"></i>'}</div><div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">${(item.price||0).toFixed(2)} ج.م</div></div><div class="cart-item-controls"><button class="quantity-btn" onclick="updateCartItemQuantity('${item.productId}',${item.quantity-1});renderCart();">−</button><span class="cart-item-quantity">${item.quantity}</span><button class="quantity-btn" onclick="updateCartItemQuantity('${item.productId}',${item.quantity+1});renderCart();">+</button><i class="fas fa-trash-alt remove-item-btn" onclick="removeFromCart('${item.productId}');renderCart();"></i></div></div>`; }); html+='</div>'; } html+=`<div class="cart-summary"><div class="cart-total"><span>الإجمالي:</span><span>${subtotal.toFixed(2)} ج.م</span></div><button class="checkout-btn" onclick="openCheckoutModal()"><i class="fas fa-check-circle"></i> متابعة الشراء</button></div>`; } html+='</div></div>'; document.getElementById('appContent').innerHTML=html; addFooter(); }
+function renderCart(){ if(!currentUser||currentUser.type!=='client'){ renderPage(); return; } const items=Object.values(currentCart.items), subtotal=items.reduce((s,i)=>s+(i.price||0)*(i.quantity||0),0); let html=`<div class="container"><button class="back-button" onclick="goBack()"><i class="fas fa-arrow-right"></i> رجوع</button><div class="dashboard-hero"><h2><i class="fas fa-shopping-cart"></i> سلة التسوق</h2></div><div class="cart-container">`; if(items.length===0){ html+='<div class="empty-state"><i class="fas fa-shopping-cart"></i><h3>السلة فارغة</h3><button onclick="renderClientStore()">تصفح المتجر</button></div>'; }else{ const groups={}; items.forEach(i=>{ const pid=i.pharmacyId||'unknown'; if(!groups[pid]) groups[pid]={ name:i.pharmacyName||'صيدلية', items:[] }; groups[pid].items.push(i); }); for(let pid in groups){ html+=`<div class="cart-pharmacy-group"><h4><i class="fas fa-store-alt"></i> ${groups[pid].name}</h4>`; groups[pid].items.forEach(item=>{ html+=`<div class="cart-item"><div class="cart-item-image">${item.imageUrl?`<img src="${item.imageUrl}" alt="${item.name}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;" onerror="this.innerHTML='<i class=\\'fas fa-capsules\\'></i>'">`:'<i class="fas fa-capsules"></i>'}</div><div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">${(item.price||0).toFixed(2)} ج.م</div></div><div class="cart-item-controls"><button class="quantity-btn" onclick="updateCartItemQuantity('${item.productId}',${item.quantity-1});renderCart();">−</button><span class="cart-item-quantity">${item.quantity}</span><button class="quantity-btn" onclick="updateCartItemQuantity('${item.productId}',${item.quantity+1});renderCart();">+</button><i class="fas fa-trash-alt remove-item-btn" onclick="removeFromCart('${item.productId}');renderCart();"></i></div></div>`; }); html+='</div>'; } html+=`<div class="cart-summary"><div class="cart-total"><span>الإجمالي:</span><span>${subtotal.toFixed(2)} ج.م</span></div><button class="checkout-btn" onclick="openCheckoutModal()"><i class="fas fa-check-circle"></i> متابعة الشراء</button></div>`; } html+='</div></div>'; document.getElementById('appContent').innerHTML=html; addFooter(); }
 function openCheckoutModal(){ const m=document.createElement('div'); m.className='modal'; m.style.display='flex'; m.innerHTML=`<div class="modal-content"><h3>تفاصيل التوصيل</h3><div class="input-group"><i class="fas fa-user"></i><input type="text" id="checkoutName" placeholder="الاسم الكامل" value="${currentUser?.fullName||currentUser?.username||''}"></div><div class="input-group"><i class="fas fa-phone"></i><input type="tel" id="checkoutPhone" placeholder="رقم الهاتف" value="${currentUser?.phone||''}"></div><div class="input-group"><i class="fas fa-map-pin"></i><textarea id="checkoutAddress" placeholder="العنوان بالتفصيل" rows="2">${currentUser?.address||''}</textarea></div><div class="modal-buttons"><button class="accept-btn" id="confirmCheckoutBtn">تأكيد الطلب</button><button class="reject-btn" onclick="this.closest('.modal').remove()">إلغاء</button></div></div>`; document.body.appendChild(m); document.getElementById('confirmCheckoutBtn').onclick=async()=>{ const n=document.getElementById('checkoutName').value.trim(), p=document.getElementById('checkoutPhone').value.trim(), a=document.getElementById('checkoutAddress').value.trim(); if(!n||!p||!a){ showMessage('جميع الحقول مطلوبة','error'); return; } m.remove(); await createOrder({ name:n, phone:p, address:a }); }; m.addEventListener('click',e=>{ if(e.target===m) m.remove(); }); }
 
 // ============ 🆕 RENDER: ORDERS (مع زر طباعة الريسيت) ============
@@ -610,9 +551,9 @@ async function renderOrders(){ if(!currentUser){ showAuthScreen(); return; } let
 
 // ============ RENDER: PHARMACY DASHBOARD & PRODUCTS ============
 async function renderPharmacyDashboard(){ const p=await getPharmacyProducts(currentUser.username), o=await getPharmacyOrders(currentUser.username); const pending=o.filter(x=>x.pharmacyData?.status==='pending').length; document.getElementById('appContent').innerHTML=`<div class="container"><div class="dashboard-hero"><h2>📊 لوحة التحكم</h2><p>${currentUser.pharmacyName||currentUser.username}</p></div><div class="stats-grid"><div class="stat-card" onclick="renderPharmacyProducts()"><i class="fas fa-box"></i><div class="stat-value">${p.length}</div><div class="stat-label">منتج</div></div><div class="stat-card" onclick="renderOrders()"><i class="fas fa-shopping-cart"></i><div class="stat-value">${o.length}</div><div class="stat-label">طلب</div></div><div class="stat-card" onclick="renderOrders()"><i class="fas fa-clock"></i><div class="stat-value">${pending}</div><div class="stat-label">قيد الانتظار</div></div></div></div>`; addFooter(); }
-async function renderPharmacyProducts() { const myProducts = await getPharmacyProducts(currentUser.username); document.getElementById('appContent').innerHTML = `<div class="container"><button class="back-button" onclick="goBack()"><i class="fas fa-arrow-right"></i> رجوع</button><div class="dashboard-hero"><h2>📦 منتجاتي</h2><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button onclick="openQRScannerModal()" style="background:linear-gradient(135deg, #f4a261, #e67e22);"><i class="fas fa-qrcode"></i> مسح باركود</button><button onclick="openSmartAddProductModal()" style="background:linear-gradient(135deg, var(--p), var(--pl));"><i class="fas fa-search"></i> إضافة من الأدوية المتاحة</button><button onclick="openAddNewProductModal()" style="background:linear-gradient(135deg, #3b82f6, #2563eb);"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</button></div></div><div class="pharmacy-cards-grid" id="productsList"></div></div>`; addFooter(); const grid = document.getElementById('productsList'); if (myProducts.length === 0) { grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><h3>لا توجد منتجات بعد</h3><p>امسح باركود أو أضف منتجات من الأدوية المتاحة أو سجل منتج جديد</p></div>'; return; } grid.innerHTML = myProducts.map(x => { const hasPrice = x.price && x.price > 0; const priceDisplay = hasPrice ? `💰 ${x.price.toFixed(2)} ج.م` : '⚠️ السعر غير محدد'; const hasImage = x.imageUrl && x.imageUrl !== ''; return `<div class="pharmacy-product-card"><div class="pharmacy-product-image">${hasImage ? `<img src="${x.imageUrl}" alt="${x.name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-capsules\\' style=\\'font-size:2.5rem;color:#b0c4d9;\\'></i>'">` : '<i class="fas fa-capsules" style="font-size:2.5rem;color:#b0c4d9;"></i>'}</div><div style="font-weight:800;color:var(--td);font-size:0.95rem;">${x.name}</div>${x.barcode ? `<div style="font-size:0.7rem;color:var(--tl);">🏷️ ${x.barcode}</div>` : ''}${x.description ? `<div style="font-size:0.8rem;color:var(--tl);margin:4px 0;">📝 ${x.description}</div>` : ''}<div style="font-size:0.8rem;color:var(--tl);">📂 ${x.category || 'عام'}</div><div style="font-weight:900;color:var(--pd);margin:4px 0;">${priceDisplay}</div><div style="font-weight:700;color:#4b7485;">📦 الكمية: ${x.quantity || 0} قطعة</div><div style="display:flex;gap:6px;margin-top:8px;"><button onclick="openEditProductModal('${x.id}')" style="flex:1;font-size:0.78rem;">✏️ تعديل</button><button class="reject-btn" onclick="deleteProduct('${x.id}').then(()=>renderPharmacyProducts())" style="flex:1;font-size:0.78rem;">🗑️ حذف</button></div></div>`; }).join(''); }
+async function renderPharmacyProducts() { const myProducts = await getPharmacyProducts(currentUser.username); document.getElementById('appContent').innerHTML = `<div class="container"><button class="back-button" onclick="goBack()"><i class="fas fa-arrow-right"></i> رجوع</button><div class="dashboard-hero"><h2>📦 منتجاتي</h2><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button onclick="openQRScannerModal()" style="background:linear-gradient(135deg, #f4a261, #e67e22);"><i class="fas fa-qrcode"></i> مسح باركود</button><button onclick="openSmartAddProductModal()" style="background:linear-gradient(135deg, var(--p), var(--pl));"><i class="fas fa-search"></i> إضافة من الأدوية المتاحة</button><button onclick="openAddNewProductModal()" style="background:linear-gradient(135deg, #3b82f6, #2563eb);"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</button></div></div><div class="pharmacy-cards-grid" id="productsList"></div></div>`; addFooter(); const grid = document.getElementById('productsList'); if (myProducts.length === 0) { grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><h3>لا توجد منتجات بعد</h3><p>امسح باركود أو أضف منتجات من الأدوية المتاحة أو سجل منتج جديد</p></div>'; return; } grid.innerHTML = myProducts.map(x => { const hasPrice = x.price && x.price > 0; const priceDisplay = hasPrice ? `💰 ${x.price.toFixed(2)} ج.م` : '⚠️ السعر غير محدد'; const hasImage = x.imageUrl && x.imageUrl !== ''; return `<div class="pharmacy-product-card"><div class="pharmacy-product-image">${hasImage ? `<img src="${x.imageUrl}" alt="${x.name}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:8px;" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-capsules\\' style=\\'font-size:2.5rem;color:#b0c4d9;\\'></i>'">` : '<i class="fas fa-capsules" style="font-size:2.5rem;color:#b0c4d9;"></i>'}</div><div style="font-weight:800;color:var(--td);font-size:0.95rem;">${x.name}</div>${x.barcode ? `<div style="font-size:0.7rem;color:var(--tl);">🏷️ ${x.barcode}</div>` : ''}${x.description ? `<div style="font-size:0.8rem;color:var(--tl);margin:4px 0;">📝 ${x.description}</div>` : ''}<div style="font-size:0.8rem;color:var(--tl);">📂 ${x.category || 'عام'}</div><div style="font-weight:900;color:var(--pd);margin:4px 0;">${priceDisplay}</div><div style="font-weight:700;color:#4b7485;">📦 الكمية: ${x.quantity || 0} قطعة</div><div style="display:flex;gap:6px;margin-top:8px;"><button onclick="openEditProductModal('${x.id}')" style="flex:1;font-size:0.78rem;">✏️ تعديل</button><button class="reject-btn" onclick="deleteProduct('${x.id}').then(()=>renderPharmacyProducts())" style="flex:1;font-size:0.78rem;">🗑️ حذف</button></div></div>`; }).join(''); }
 
-// ============ PHARMACY QR / ADD PRODUCT MODALS (موجودة في الرد السابق) ============
+// ============ PHARMACY QR / ADD PRODUCT MODALS ============
 function openQRScannerModal() { if (html5QrCode) { html5QrCode.stop().catch(() => {}); html5QrCode = null; } if (clientHtml5QrCode) { clientHtml5QrCode.stop().catch(() => {}); clientHtml5QrCode = null; } const m = document.createElement('div'); m.className = 'modal'; m.style.display = 'flex'; m.innerHTML = `<div class="modal-content" style="max-width:500px;"><h3>📷 مسح الباركود</h3><p style="text-align:center;color:var(--tl);font-size:0.85rem;margin-bottom:1rem;">وجه الكاميرا نحو الباركود الخاص بالمنتج</p><div class="qr-scanner-container"><div id="qr-reader"></div></div><div id="scanResult" style="text-align:center;padding:10px;margin:10px 0;display:none;"></div><div style="text-align:center;margin-top:10px;"><label style="display:inline-block;padding:10px 20px;background:var(--tl);color:white;border-radius:25px;cursor:pointer;font-weight:600;font-size:0.85rem;"><i class="fas fa-image"></i> رفع صورة باركود<input type="file" id="barcodeImageInput" accept="image/*" style="display:none;" onchange="scanBarcodeFromImage(this)"></label></div><div class="modal-buttons" style="margin-top:1rem;"><button onclick="openManualBarcodeInput()" style="background:var(--i);"><i class="fas fa-keyboard"></i> إدخال يدوي</button><button class="reject-btn" onclick="stopQRScanner(); this.closest('.modal').remove();"><i class="fas fa-times"></i> إغلاق</button></div></div>`; document.body.appendChild(m); startQRScanner(); m.addEventListener('click', function(e) { if (e.target === m) { stopQRScanner(); m.remove(); } }); }
 function startQRScanner() { const qrReader = document.getElementById('qr-reader'); if (!qrReader) return; html5QrCode = new Html5Qrcode("qr-reader"); html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 }, onQRCodeScanned, () => {}).catch(() => { showMessage('تعذر تشغيل الكاميرا', 'error'); }); }
 function stopQRScanner() { if (html5QrCode) { html5QrCode.stop().catch(() => {}); html5QrCode = null; } }
@@ -622,11 +563,11 @@ function openManualBarcodeInput() { stopQRScanner(); const barcode = prompt('أ�
 async function processBarcodeResult(barcode) { document.querySelectorAll('.modal').forEach(m => m.remove()); const result = await findProductByBarcode(barcode); if (result.found) { const product = result.product; const myProducts = await getPharmacyProducts(currentUser.username); const alreadyHave = myProducts.find(p => p.barcode === barcode || p.globalCatalogId === result.product.id); if (alreadyHave) { showMessage(`المنتج "${product.name}" موجود بالفعل في مخزونك!`, 'warning'); return; } openQRProductAddModal(product, barcode); } else { openQRNewProductModal(barcode); } }
 function openQRProductAddModal(product, barcode) { const hasPrice = product.price && product.price > 0; const m = document.createElement('div'); m.className = 'modal'; m.style.display = 'flex'; m.innerHTML = `<div class="modal-content"><h3>✅ تم التعرف على المنتج</h3><div style="text-align:center;margin-bottom:1rem;"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pl));display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px;"><i class="fas fa-check-circle" style="font-size:2rem;color:white;"></i></div><h4 style="color:var(--td);">${product.name}</h4><p style="color:var(--tl);">الباركود: ${barcode}</p>${product.category ? `<span style="background:#e8f5e9;color:var(--pd);padding:4px 12px;border-radius:12px;font-size:0.8rem;">📂 ${product.category}</span>` : ''}${hasPrice ? `<p style="color:var(--pd);font-weight:800;margin-top:5px;">💰 ${product.price.toFixed(2)} ج.م</p>` : '<p style="color:#e67e22;">⚠️ السعر غير محدد</p>'}</div>${!hasPrice ? `<div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="qrProductPrice" placeholder="أدخل السعر بالجنية *" step="0.01" min="0.01"></div>` : ''}<div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="qrProductQuantity" placeholder="الكمية المتاحة *" value="1" min="1"></div><div class="modal-buttons"><button id="saveQRProductBtn" class="accept-btn" onclick="addQRProductToPharmacy('${product.id}', '${product.name.replace(/'/g, "\\'")}', ${hasPrice ? product.price : 0}, '${barcode}')"><i class="fas fa-plus-circle"></i> إضافة للمخزون</button><button class="reject-btn" onclick="this.closest('.modal').remove()">❌ إلغاء</button></div></div>`; document.body.appendChild(m); m.addEventListener('click', e => { if (e.target === m) m.remove(); }); }
 async function addQRProductToPharmacy(globalCatalogId, name, price, barcode) { const quantity = parseInt(document.getElementById('qrProductQuantity').value) || 0; if (quantity <= 0) { showMessage('أدخل كمية صحيحة', 'error'); return; } if (!price || price <= 0) { price = parseFloat(document.getElementById('qrProductPrice')?.value); if (!price || price <= 0) { showMessage('أدخل سعر صحيح', 'error'); return; } await db.ref(`globalProductsCatalog/${globalCatalogId}`).update({ price }); } const btn = document.getElementById('saveQRProductBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإضافة...'; try { const prodSnap = await db.ref(`globalProductsCatalog/${globalCatalogId}`).once('value'); const prodData = prodSnap.val() || {}; await saveProduct({ pharmacyId: currentUser.username, pharmacyName: currentUser.pharmacyName || currentUser.username, pharmacyPhone: currentUser.phone || '', name: prodData.name || name, description: prodData.description || '', category: prodData.category || 'عام', price: price || prodData.price || 0, quantity, imageUrl: prodData.imageUrl || null, barcode, globalCatalogId }); document.querySelectorAll('.modal').forEach(m => m.remove()); renderPharmacyProducts(); showMessage(`✅ تم إضافة ${name} (${quantity} قطعة)`, 'success'); } catch (err) { showMessage('خطأ في الحفظ', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus-circle"></i> إضافة للمخزون'; } }
-function openQRNewProductModal(barcode) { window.qrSelectedImage = null; const m = document.createElement('div'); m.className = 'modal'; m.style.display = 'flex'; m.innerHTML = `<div class="modal-content"><h3>🆕 منتج جديد</h3><p style="text-align:center;color:var(--tl);font-size:0.85rem;margin-bottom:1rem;">المنتج بالباركود <strong>${barcode}</strong> غير موجود. سجل بياناته الآن.</p><div class="input-group"><i class="fas fa-tag"></i><input type="text" id="qrNewProductName" placeholder="اسم المنتج *" required></div><div class="input-group"><i class="fas fa-align-right"></i><textarea id="qrNewProductDescription" placeholder="وصف مختصر..." rows="2" style="padding-right:38px;"></textarea></div><div class="input-group"><i class="fas fa-list"></i><select id="qrNewProductCategory">${productCategories.map(c => `<option>${c}</option>`).join('')}</select></div><div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="qrNewProductPrice" placeholder="السعر بالجنية *" step="0.01" min="0.01" required></div><div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="qrNewProductQuantity" placeholder="الكمية المتاحة" value="1" min="1"></div><div class="input-group"><label style="display:block;margin-bottom:6px;font-weight:700;font-size:0.88rem;color:var(--td);">📸 صورة المنتج</label><input type="file" id="qrNewProductImage" accept="image/*" style="display:block;margin-top:6px;padding:10px;border:2px dashed #d6e4ec;border-radius:14px;width:100%;"><div id="qrNewImagePreview" style="margin-top:10px;text-align:center;"></div></div><div class="modal-buttons"><button id="saveQRNewProductBtn" class="accept-btn" onclick="saveQRNewProduct('${barcode}')">💾 حفظ وإضافة للمخزون</button><button class="reject-btn" onclick="this.closest('.modal').remove()">❌ إلغاء</button></div></div>`; document.body.appendChild(m); setTimeout(() => { const imgInput = document.getElementById('qrNewProductImage'); if (imgInput) { imgInput.onchange = function(e) { const file = e.target.files[0]; if (!file) return; if (file.size > 2 * 1024 * 1024) { showMessage('حجم الصورة كبير جداً', 'error'); return; } const reader = new FileReader(); reader.onload = function(ev) { window.qrSelectedImage = ev.target.result; const preview = document.getElementById('qrNewImagePreview'); if (preview) preview.innerHTML = `<div style="border:2px solid #0ea882;border-radius:14px;padding:10px;display:inline-block;background:#f9fcfd;"><img src="${window.qrSelectedImage}" style="max-width:200px;max-height:150px;border-radius:10px;"><small style="color:#0ea882;display:block;margin-top:6px;font-weight:700;">✅ تم التحميل</small></div>`; }; reader.readAsDataURL(file); }; } }, 100); m.addEventListener('click', e => { if (e.target === m) m.remove(); }); }
+function openQRNewProductModal(barcode) { window.qrSelectedImage = null; const m = document.createElement('div'); m.className = 'modal'; m.style.display = 'flex'; m.innerHTML = `<div class="modal-content"><h3>🆕 منتج جديد</h3><p style="text-align:center;color:var(--tl);font-size:0.85rem;margin-bottom:1rem;">المنتج بالباركود <strong>${barcode}</strong> غير موجود. سجل بياناته الآن.</p><div class="input-group"><i class="fas fa-tag"></i><input type="text" id="qrNewProductName" placeholder="اسم المنتج *" required></div><div class="input-group"><i class="fas fa-align-right"></i><textarea id="qrNewProductDescription" placeholder="وصف مختصر..." rows="2" style="padding-right:38px;"></textarea></div><div class="input-group"><i class="fas fa-list"></i><select id="qrNewProductCategory">${productCategories.map(c => `<option>${c}</option>`).join('')}</select></div><div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="qrNewProductPrice" placeholder="السعر بالجنية *" step="0.01" min="0.01" required></div><div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="qrNewProductQuantity" placeholder="الكمية المتاحة" value="1" min="1"></div><div class="input-group"><label style="display:block;margin-bottom:6px;font-weight:700;font-size:0.88rem;color:var(--td);">📸 صورة المنتج</label><input type="file" id="qrNewProductImage" accept="image/*" style="display:block;margin-top:6px;padding:10px;border:2px dashed #d6e4ec;border-radius:14px;width:100%;"><div id="qrNewImagePreview" style="margin-top:10px;text-align:center;"></div></div><div class="modal-buttons"><button id="saveQRNewProductBtn" class="accept-btn" onclick="saveQRNewProduct('${barcode}')">💾 حفظ وإضافة للمخزون</button><button class="reject-btn" onclick="this.closest('.modal').remove()">❌ إلغاء</button></div></div>`; document.body.appendChild(m); setTimeout(() => { const imgInput = document.getElementById('qrNewProductImage'); if (imgInput) { imgInput.onchange = function(e) { const file = e.target.files[0]; if (!file) return; if (file.size > 2 * 1024 * 1024) { showMessage('حجم الصورة كبير جداً', 'error'); return; } const reader = new FileReader(); reader.onload = function(ev) { window.qrSelectedImage = ev.target.result; const preview = document.getElementById('qrNewImagePreview'); if (preview) preview.innerHTML = `<div style="border:2px solid #0ea882;border-radius:14px;padding:10px;display:inline-block;background:#f9fcfd;"><img src="${window.qrSelectedImage}" style="max-width:200px; max-height:150px; width:auto; height:auto; object-fit:contain; border-radius:10px;"><small style="color:#0ea882;display:block;margin-top:6px;font-weight:700;">✅ تم التحميل</small></div>`; }; reader.readAsDataURL(file); }; } }, 100); m.addEventListener('click', e => { if (e.target === m) m.remove(); }); }
 async function saveQRNewProduct(barcode) { const name = document.getElementById('qrNewProductName').value.trim(), description = document.getElementById('qrNewProductDescription').value.trim(), price = parseFloat(document.getElementById('qrNewProductPrice').value), quantity = parseInt(document.getElementById('qrNewProductQuantity').value) || 1, category = document.getElementById('qrNewProductCategory').value, imageUrl = window.qrSelectedImage || null; if (!name) { showMessage('أدخل اسم المنتج', 'error'); return; } if (!price || price <= 0) { showMessage('أدخل سعر صحيح', 'error'); return; } const btn = document.getElementById('saveQRNewProductBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; try { await saveProductToGlobalCatalog({ name, description: description || 'منتج طبي', category, price, barcode, imageUrl }); await saveProduct({ pharmacyId: currentUser.username, pharmacyName: currentUser.pharmacyName || currentUser.username, pharmacyPhone: currentUser.phone || '', name, description: description || 'منتج طبي عالي الجودة', category, price, quantity, barcode, imageUrl }); document.querySelectorAll('.modal').forEach(m => m.remove()); renderPharmacyProducts(); showMessage('✅ تم إضافة المنتج الجديد للكتالوج العالمي ولمخزونك!', 'success'); } catch (err) { showMessage('خطأ في الحفظ', 'error'); btn.disabled = false; btn.innerHTML = '💾 حفظ وإضافة للمخزون'; } }
-function openAddNewProductModal() { const m = document.createElement('div'); m.className = 'modal'; m.style.display = 'flex'; m.innerHTML = `<div class="modal-content"><h3>🆕 إضافة منتج جديد</h3><p style="text-align:center;color:var(--tl);font-size:0.85rem;margin-bottom:1rem;">سجل منتج جديد وأضفه للكتالوج العالمي عشان الصيدليات التانية تشوفه</p><div class="input-group"><i class="fas fa-tag"></i><input type="text" id="newProductName" placeholder="اسم المنتج *"></div><div class="input-group"><i class="fas fa-barcode"></i><input type="text" id="newProductBarcode" placeholder="الباركود (اختياري)"></div><div class="input-group"><i class="fas fa-align-right"></i><textarea id="newProductDescription" placeholder="وصف مختصر..." rows="2" style="padding-right:38px;"></textarea></div><div class="input-group"><i class="fas fa-list"></i><select id="newProductCategory">${productCategories.map(c => `<option>${c}</option>`).join('')}</select></div><div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="newProductPrice" placeholder="السعر بالجنية *" step="0.01" min="0.01"></div><div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="newProductQuantity" placeholder="الكمية المتاحة" value="1" min="0"></div><div class="input-group"><label style="display:block;margin-bottom:6px;font-weight:700;font-size:0.88rem;color:var(--td);">📸 صورة المنتج</label><input type="file" id="newProductImage" accept="image/*" style="display:block;margin-top:6px;padding:10px;border:2px dashed #d6e4ec;border-radius:14px;width:100%;"><div id="newImagePreview" style="margin-top:10px;text-align:center;"></div></div><div class="modal-buttons"><button id="saveNewProductBtn" class="accept-btn">💾 حفظ وإضافة للمخزون</button><button class="reject-btn" onclick="this.closest('.modal').remove()">❌ إلغاء</button></div></div>`; document.body.appendChild(m); let selectedImageData = null; document.getElementById('newProductImage').onchange = function(e) { const file = e.target.files[0]; if (!file) return; if (file.size > 2 * 1024 * 1024) { showMessage('حجم الصورة كبير جداً', 'error'); return; } const reader = new FileReader(); reader.onload = function(ev) { selectedImageData = ev.target.result; document.getElementById('newImagePreview').innerHTML = `<div style="border:2px solid #0ea882;border-radius:14px;padding:10px;display:inline-block;background:#f9fcfd;"><img src="${selectedImageData}" style="max-width:200px;max-height:150px;border-radius:10px;"><small style="color:#0ea882;display:block;margin-top:6px;font-weight:700;">✅ تم التحميل</small></div>`; }; reader.readAsDataURL(file); }; document.getElementById('saveNewProductBtn').onclick = async function() { const name = document.getElementById('newProductName').value.trim(), barcode = document.getElementById('newProductBarcode').value.trim(), description = document.getElementById('newProductDescription').value.trim(), price = parseFloat(document.getElementById('newProductPrice').value), quantity = parseInt(document.getElementById('newProductQuantity').value) || 1, category = document.getElementById('newProductCategory').value; if (!name) { showMessage('أدخل اسم المنتج', 'error'); return; } if (!price || price <= 0) { showMessage('أدخل سعر صحيح', 'error'); return; } this.disabled = true; this.textContent = '⏳ جاري الحفظ...'; try { await saveProductToGlobalCatalog({ name, description: description || 'منتج طبي', category, price, imageUrl: selectedImageData || null, barcode: barcode || null }); await saveProduct({ pharmacyId: currentUser.username, pharmacyName: currentUser.pharmacyName || currentUser.username, pharmacyPhone: currentUser.phone || '', name, description: description || 'منتج طبي عالي الجودة', category, price, quantity, imageUrl: selectedImageData || null, barcode: barcode || null }); m.remove(); renderPharmacyProducts(); showMessage('✅ تم إضافة المنتج للكتالوج العالمي ولمخزونك!', 'success'); } catch (err) { showMessage('خطأ في الحفظ', 'error'); this.disabled = false; this.textContent = '💾 حفظ وإضافة للمخزون'; } }; m.addEventListener('click', function(e) { if (e.target === m) m.remove(); }); }
+function openAddNewProductModal() { const m = document.createElement('div'); m.className = 'modal'; m.style.display = 'flex'; m.innerHTML = `<div class="modal-content"><h3>🆕 إضافة منتج جديد</h3><p style="text-align:center;color:var(--tl);font-size:0.85rem;margin-bottom:1rem;">سجل منتج جديد وأضفه للكتالوج العالمي عشان الصيدليات التانية تشوفه</p><div class="input-group"><i class="fas fa-tag"></i><input type="text" id="newProductName" placeholder="اسم المنتج *"></div><div class="input-group"><i class="fas fa-barcode"></i><input type="text" id="newProductBarcode" placeholder="الباركود (اختياري)"></div><div class="input-group"><i class="fas fa-align-right"></i><textarea id="newProductDescription" placeholder="وصف مختصر..." rows="2" style="padding-right:38px;"></textarea></div><div class="input-group"><i class="fas fa-list"></i><select id="newProductCategory">${productCategories.map(c => `<option>${c}</option>`).join('')}</select></div><div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="newProductPrice" placeholder="السعر بالجنية *" step="0.01" min="0.01"></div><div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="newProductQuantity" placeholder="الكمية المتاحة" value="1" min="0"></div><div class="input-group"><label style="display:block;margin-bottom:6px;font-weight:700;font-size:0.88rem;color:var(--td);">📸 صورة المنتج</label><input type="file" id="newProductImage" accept="image/*" style="display:block;margin-top:6px;padding:10px;border:2px dashed #d6e4ec;border-radius:14px;width:100%;"><div id="newImagePreview" style="margin-top:10px;text-align:center;"></div></div><div class="modal-buttons"><button id="saveNewProductBtn" class="accept-btn">💾 حفظ وإضافة للمخزون</button><button class="reject-btn" onclick="this.closest('.modal').remove()">❌ إلغاء</button></div></div>`; document.body.appendChild(m); let selectedImageData = null; document.getElementById('newProductImage').onchange = function(e) { const file = e.target.files[0]; if (!file) return; if (file.size > 2 * 1024 * 1024) { showMessage('حجم الصورة كبير جداً', 'error'); return; } const reader = new FileReader(); reader.onload = function(ev) { selectedImageData = ev.target.result; document.getElementById('newImagePreview').innerHTML = `<div style="border:2px solid #0ea882;border-radius:14px;padding:10px;display:inline-block;background:#f9fcfd;"><img src="${selectedImageData}" style="max-width:200px; max-height:150px; width:auto; height:auto; object-fit:contain; border-radius:10px;"><small style="color:#0ea882;display:block;margin-top:6px;font-weight:700;">✅ تم التحميل</small></div>`; }; reader.readAsDataURL(file); }; document.getElementById('saveNewProductBtn').onclick = async function() { const name = document.getElementById('newProductName').value.trim(), barcode = document.getElementById('newProductBarcode').value.trim(), description = document.getElementById('newProductDescription').value.trim(), price = parseFloat(document.getElementById('newProductPrice').value), quantity = parseInt(document.getElementById('newProductQuantity').value) || 1, category = document.getElementById('newProductCategory').value; if (!name) { showMessage('أدخل اسم المنتج', 'error'); return; } if (!price || price <= 0) { showMessage('أدخل سعر صحيح', 'error'); return; } this.disabled = true; this.textContent = '⏳ جاري الحفظ...'; try { await saveProductToGlobalCatalog({ name, description: description || 'منتج طبي', category, price, imageUrl: selectedImageData || null, barcode: barcode || null }); await saveProduct({ pharmacyId: currentUser.username, pharmacyName: currentUser.pharmacyName || currentUser.username, pharmacyPhone: currentUser.phone || '', name, description: description || 'منتج طبي عالي الجودة', category, price, quantity, imageUrl: selectedImageData || null, barcode: barcode || null }); m.remove(); renderPharmacyProducts(); showMessage('✅ تم إضافة المنتج للكتالوج العالمي ولمخزونك!', 'success'); } catch (err) { showMessage('خطأ في الحفظ', 'error'); this.disabled = false; this.textContent = '💾 حفظ وإضافة للمخزون'; } }; m.addEventListener('click', function(e) { if (e.target === m) m.remove(); }); }
 let selectedSmartProduct = null;
-async function openSmartAddProductModal() { const globalCatalog = await getGlobalProductsCatalog(); if (globalCatalog.length === 0) { showMessage('لا توجد أدوية في الكتالوج العالمي بعد', 'warning'); openAddNewProductModal(); return; } selectedSmartProduct = null; const m = document.createElement('div'); m.className = 'modal'; m.style.display = 'flex'; const productsHTML = globalCatalog.map(p => `<div class="smart-product-item" data-name="${p.name}" data-id="${p.id}" style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #f0f4f8;cursor:pointer;" onclick="selectSmartProduct('${p.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price || 0}, '${p.category || 'عام'}', '${(p.imageUrl || '').replace(/'/g, "\\'")}', '${(p.description || '').replace(/'/g, "\\'")}')"><div style="width:45px;height:45px;border-radius:10px;overflow:hidden;background:#f5f9fc;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${p.imageUrl ? `<img src="${p.imageUrl}" style="width:100%;height:100%;object-fit:cover;" onerror="this.innerHTML='<i class=\\'fas fa-capsules\\' style=\\'color:#b0c4d9;\\'></i>'">` : '<i class="fas fa-capsules" style="color:#b0c4d9;font-size:1.5rem;"></i>'}</div><div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:0.9rem;color:var(--td);">${p.name}</div><div style="font-size:0.75rem;color:var(--tl);">📂 ${p.category || 'عام'} ${p.price ? `| 💰 ${p.price} ج.م` : '| ⚠️ بدون سعر'}</div></div><i class="fas fa-chevron-left" style="color:var(--p);"></i></div>`).join(''); m.innerHTML = `<div class="modal-content" style="max-width:550px;"><h3>🔍 إضافة منتج من الأدوية المتاحة</h3><p style="text-align:center;color:var(--tl);font-size:0.85rem;margin-bottom:1rem;">اختر الدواء من القائمة، ثم حدد الكمية المتوفرة عندك</p><div class="input-group"><i class="fas fa-search"></i><input type="text" id="smartSearchInput" placeholder="ابحث عن دواء بالاسم..." oninput="filterSmartProductList()"></div><div style="max-height:250px;overflow-y:auto;border:1px solid #e0e8ef;border-radius:12px;margin-bottom:1rem;" id="smartProductList">${productsHTML}</div><div id="selectedProductInfo" style="display:none;background:#f0faf6;border:2px solid var(--p);border-radius:14px;padding:12px;margin-bottom:1rem;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><i class="fas fa-check-circle" style="color:var(--p);font-size:1.2rem;"></i><strong id="selectedProductName" style="color:var(--td);"></strong></div><div id="selectedProductPriceInfo" style="font-size:0.85rem;color:var(--tl);margin-bottom:8px;"></div><div id="priceInputContainer" style="display:none;"><div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="smartProductPrice" placeholder="أدخل السعر بالجنية *" step="0.01" min="0.01"></div></div><div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="smartProductQuantity" placeholder="الكمية المتاحة *" value="1" min="1"></div><button id="addSmartProductBtn" class="accept-btn" style="width:100%;" onclick="addSmartProductToPharmacy()"><i class="fas fa-plus-circle"></i> إضافة للمخزون</button></div><button class="reject-btn" onclick="this.closest('.modal').remove()" style="width:100%;">❌ إغلاق</button></div>`; document.body.appendChild(m); m.addEventListener('click', e => { if (e.target === m) m.remove(); }); }
+async function openSmartAddProductModal() { const globalCatalog = await getGlobalProductsCatalog(); if (globalCatalog.length === 0) { showMessage('لا توجد أدوية في الكتالوج العالمي بعد', 'warning'); openAddNewProductModal(); return; } selectedSmartProduct = null; const m = document.createElement('div'); m.className = 'modal'; m.style.display = 'flex'; const productsHTML = globalCatalog.map(p => { const hasImage = p.imageUrl && p.imageUrl !== ''; return `<div class="smart-product-item" data-name="${p.name}" data-id="${p.id}" style="display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #f0f4f8;cursor:pointer;" onclick="selectSmartProduct('${p.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price || 0}, '${p.category || 'عام'}', '${(p.imageUrl || '').replace(/'/g, "\\'")}', '${(p.description || '').replace(/'/g, "\\'")}')"><div class="smart-product-image-container">${hasImage ? `<img src="${p.imageUrl}" alt="${p.name}" style="max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:6px;" onerror="this.innerHTML='<i class=\\'fas fa-capsules\\' style=\\'color:#b0c4d9;font-size:1.2rem;\\'></i>'">` : '<i class="fas fa-capsules" style="color:#b0c4d9;font-size:1.2rem;"></i>'}</div><div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:0.9rem;color:var(--td);">${p.name}</div><div style="font-size:0.75rem;color:var(--tl);">📂 ${p.category || 'عام'} ${p.price ? `| 💰 ${p.price} ج.م` : '| ⚠️ بدون سعر'}</div></div><i class="fas fa-chevron-left" style="color:var(--p);"></i></div>`; }).join(''); m.innerHTML = `<div class="modal-content" style="max-width:550px;"><h3>🔍 إضافة منتج من الأدوية المتاحة</h3><p style="text-align:center;color:var(--tl);font-size:0.85rem;margin-bottom:1rem;">اختر الدواء من القائمة، ثم حدد الكمية المتوفرة عندك</p><div class="input-group"><i class="fas fa-search"></i><input type="text" id="smartSearchInput" placeholder="ابحث عن دواء بالاسم..." oninput="filterSmartProductList()"></div><div style="max-height:250px;overflow-y:auto;border:1px solid #e0e8ef;border-radius:12px;margin-bottom:1rem;" id="smartProductList">${productsHTML}</div><div id="selectedProductInfo" style="display:none;background:#f0faf6;border:2px solid var(--p);border-radius:14px;padding:12px;margin-bottom:1rem;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><i class="fas fa-check-circle" style="color:var(--p);font-size:1.2rem;"></i><strong id="selectedProductName" style="color:var(--td);"></strong></div><div id="selectedProductPriceInfo" style="font-size:0.85rem;color:var(--tl);margin-bottom:8px;"></div><div id="priceInputContainer" style="display:none;"><div class="input-group"><i class="fas fa-money-bill"></i><input type="number" id="smartProductPrice" placeholder="أدخل السعر بالجنية *" step="0.01" min="0.01"></div></div><div class="input-group"><i class="fas fa-boxes"></i><input type="number" id="smartProductQuantity" placeholder="الكمية المتاحة *" value="1" min="1"></div><button id="addSmartProductBtn" class="accept-btn" style="width:100%;" onclick="addSmartProductToPharmacy()"><i class="fas fa-plus-circle"></i> إضافة للمخزون</button></div><button class="reject-btn" onclick="this.closest('.modal').remove()" style="width:100%;">❌ إغلاق</button></div>`; document.body.appendChild(m); m.addEventListener('click', e => { if (e.target === m) m.remove(); }); }
 function filterSmartProductList() { const query = document.getElementById('smartSearchInput')?.value?.toLowerCase() || ''; document.querySelectorAll('.smart-product-item').forEach(item => { item.style.display = (item.getAttribute('data-name') || '').toLowerCase().includes(query) ? 'flex' : 'none'; }); }
 function selectSmartProduct(id, name, price, category, imageUrl, description) { document.querySelectorAll('.smart-product-item').forEach(item => { item.classList.remove('selected'); item.style.background = 'white'; }); const selectedItem = document.querySelector(`[data-id="${id}"]`); if (selectedItem) { selectedItem.classList.add('selected'); selectedItem.style.background = '#e8f5e9'; } selectedSmartProduct = { id, name, price, category, imageUrl, description }; document.getElementById('selectedProductInfo').style.display = 'block'; document.getElementById('selectedProductName').textContent = name; if (price && price > 0) { document.getElementById('selectedProductPriceInfo').innerHTML = `💰 السعر: <strong>${price.toFixed(2)} ج.م</strong> (مُسجل مسبقاً)`; document.getElementById('priceInputContainer').style.display = 'none'; } else { document.getElementById('selectedProductPriceInfo').innerHTML = '⚠️ هذا المنتج لا يوجد له سعر مسجل. الرجاء إدخال السعر.'; document.getElementById('priceInputContainer').style.display = 'block'; } document.getElementById('smartProductQuantity').value = 1; }
 async function addSmartProductToPharmacy() { if (!selectedSmartProduct) { showMessage('اختر منتجاً من القائمة أولاً', 'error'); return; } const quantity = parseInt(document.getElementById('smartProductQuantity').value) || 0; if (quantity <= 0) { showMessage('أدخل كمية صحيحة', 'error'); return; } let price = selectedSmartProduct.price; if (!price || price <= 0) { price = parseFloat(document.getElementById('smartProductPrice').value); if (!price || price <= 0) { showMessage('أدخل سعر صحيح', 'error'); return; } await db.ref(`globalProductsCatalog/${selectedSmartProduct.id}`).update({ price }); } const btn = document.getElementById('addSmartProductBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإضافة...'; try { await saveProduct({ pharmacyId: currentUser.username, pharmacyName: currentUser.pharmacyName || currentUser.username, pharmacyPhone: currentUser.phone || '', name: selectedSmartProduct.name, description: selectedSmartProduct.description || 'منتج طبي', category: selectedSmartProduct.category || 'عام', price, quantity, imageUrl: selectedSmartProduct.imageUrl || null, globalCatalogId: selectedSmartProduct.id }); document.querySelectorAll('.modal').forEach(m => m.remove()); renderPharmacyProducts(); showMessage(`✅ تم إضافة ${selectedSmartProduct.name} (${quantity} قطعة)`, 'success'); } catch (err) { showMessage('خطأ في الحفظ', 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-plus-circle"></i> إضافة للمخزون'; } }
